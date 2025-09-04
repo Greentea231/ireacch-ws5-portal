@@ -1,1 +1,37 @@
+/* Basic page defaults */
+html,body{margin:0;background:var(--ire-base);color:var(--ire-contrast);font-family:var(--font-sans)}
+.container{max-width:var(--container);margin:0 auto;padding:0 24px}
+
+/* Site header */
+.site-header{background:#fff;border-bottom:1px solid #eee}
+.site-header .bar{display:flex;align-items:center;justify-content:space-between;height:72px}
+
+/* Branding */
+.site-header .logo{display:flex;align-items:center;gap:12px}
+.site-header .logo img{height:40px;width:auto}
+
+/* Desktop nav */
+.nav{display:flex;gap:18px;align-items:center}
+.nav a{
+  color:var(--ire-dark-blue);
+  text-decoration:none;
+  font-size:15px;
+  padding:8px 10px;
+  border-radius:8px;
+}
+.nav a:hover,.nav a.active{
+  color:#fff;
+  background:linear-gradient(135deg,var(--ire-purple),var(--ire-blue));
+}
+
+/* Mobile toggle */
+.nav-toggle{display:none;background:none;border:0;cursor:pointer}
+.nav-toggle svg{width:24px;height:24px;fill:var(--ire-contrast)}
+
+/* Responsive nav */
+@media (max-width: 900px){
+  .nav{display:none;position:absolute;top:72px;left:0;right:0;background:#fff;border-bottom:1px solid #eee;padding:12px 24px;flex-direction:column}
+  .nav.open{display:flex}
+  .nav-toggle{display:block}
+}
 
