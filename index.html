@@ -1,28 +1,49 @@
-<!-- Header -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>I-REACCH Portal</title>
+
+  <!-- CSS (relative paths, no leading /) -->
+  <link rel="stylesheet" href="assets/css/brand.css" />
+  <link rel="stylesheet" href="assets/css/header.css" />
+</head>
+<body>
+
 <header class="site-header">
   <div class="container bar">
     <a class="logo" href="index.html" aria-label="I-REACCH home">
-      <!-- use your saved logo path -->
-      <img src="assets/img/ireacch-logo.png" alt="I-REACCH">
+      <!-- NOTE: your logo currently sits under assets/css/img/ -->
+      <img src="assets/css/img/ireacch-logo.png" alt="I-REACCH" />
     </a>
 
     <button class="nav-toggle" aria-label="Open menu" aria-controls="primary-nav" aria-expanded="false">
-      <!-- Hamburger icon -->
       <svg viewBox="0 0 24 24"><rect x="4" y="7.5" width="16" height="1.5"/><rect x="4" y="15" width="16" height="1.5"/></svg>
     </button>
 
     <nav id="primary-nav" class="nav" role="navigation" aria-label="Primary">
       <a href="index.html" class="active">Home</a>
-      <a href="workstreams.html">Workstreams</a>
-      <a href="team.html">Meet the team</a>
-      <a href="events.html">Events</a>
-      <a href="disrupting.html">Disrupting the Default</a>
-      <a href="funding.html">Funding opportunities</a>
-      <a href="social.html">Social media</a>
-      <a href="blog.html">Blog</a>
-      <!-- Add your new portal link here when ready -->
+      <a href="#">Workstreams</a>
+      <a href="#">Meet the team</a>
+      <a href="#">Events</a>
+      <a href="#">Disrupting the Default</a>
+      <a href="#">Funding opportunities</a>
+      <a href="#">Social media</a>
+      <a href="#">Blog</a>
       <a href="survey.html"><strong>Evaluation Portal</strong></a>
     </nav>
   </div>
 </header>
 
+<main class="container" style="padding:24px 0">
+  <section class="card">
+    <h1 style="margin:0 0 8px">Welcome to the I-REACCH Evaluation Space</h1>
+    <p class="small">Reflect, share, and improve research culture together.</p>
+    <a class="btn" href="survey.html">Start now</a>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
