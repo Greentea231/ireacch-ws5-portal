@@ -1,28 +1,25 @@
-/* Header & nav */
-.site-header { background:#fff; border-bottom:1px solid #eee; }
-.site-header .bar { display:flex; align-items:center; justify-content:space-between; height:72px; }
-.logo img { height:40px; width:auto; display:block; }
+/* ===== Header & Nav to look like I-REACCH site ===== */
+.site-header{background:#fff;border-bottom:1px solid var(--ire-border);}
+.site-header .bar{display:flex;align-items:center;justify-content:space-between;height:78px;}
+.logo img{height:44px;width:auto;display:block;}
 
-.nav { display:flex; gap:18px; align-items:center; }
-.nav a {
-  color:var(--ire-dark-blue);
-  text-decoration:none;
-  font-size:15px;
-  padding:8px 10px;
-  border-radius:8px;
+.nav{display:flex;gap:28px;align-items:center;}            /* larger gaps like site */
+.nav a{
+  color:#2f5d98;                                           /* closer to site link colour */
+  font-weight:500;
+  padding:10px 0;                                          /* no pill background */
 }
-.nav a:hover, .nav a.active {
-  color:#fff;
-  background:linear-gradient(135deg, var(--ire-purple), var(--ire-blue));
-}
+.nav a.active{font-weight:700; text-decoration:underline;} /* active looks bold/underlined */
+.nav a:hover{text-decoration:underline;}
 
-/* Mobile menu */
-.nav-toggle { display:none; background:none; border:0; cursor:pointer; }
-.nav-toggle svg { width:24px; height:24px; fill:var(--ire-contrast); }
+.nav-toggle{display:none;background:none;border:0;cursor:pointer;}
+.nav-toggle svg{width:26px;height:26px;fill:var(--ire-ink);}
 
+/* Mobile */
 @media (max-width:900px){
-  .nav { display:none; position:absolute; top:72px; left:0; right:0; background:#fff; border-bottom:1px solid #eee; padding:12px 24px; flex-direction:column; }
-  .nav.open { display:flex; }
-  .nav a { padding:12px; }
-  .nav-toggle { display:block; }
+  .nav{display:none;position:absolute;top:78px;left:0;right:0;background:#fff;
+       border-bottom:1px solid var(--ire-border);padding:12px 24px;flex-direction:column;}
+  .nav.open{display:flex;}
+  .nav a{padding:12px 0;}
+  .nav-toggle{display:block;}
 }
