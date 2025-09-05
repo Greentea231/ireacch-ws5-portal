@@ -1,21 +1,29 @@
 :root{
-  /* Colours taken from the site presets you shared */
-  --ire-base: #f9f9f9;                 /* background */
-  --ire-contrast: #111111;            /* body text */
-  --ire-contrast-2: #636363;          /* secondary text */
-  --ire-purple: #4a007f;              /* custom dark purple */
-  --ire-blue: #00b0f0;                /* custom blue */
-  --ire-dark-blue: #3a71b0;           /* custom dark blue (used for nav links) */
-  --ire-light-blue: #cae3e6;
+  /* Colours from the I-REACCH site tokens you shared */
+  --ire-base: #f9f9f9;          /* page background */
+  --ire-contrast: #111111;      /* main text */
+  --ire-contrast-2: #636363;    /* secondary text */
+  --ire-purple: #4a007f;        /* custom dark purple */
+  --ire-blue: #00b0f0;          /* custom blue */
+  --ire-dark-blue: #3a71b0;     /* nav link colour */
   --ire-grey: #e7e6e6;
 
-  /* Layout from WP presets you pasted */
-  --container: 1280px;                /* wide size */
-  --content: 620px;
+  --container: 1200px;
   --radius: 12px;
   --shadow: 0 6px 18px rgba(0,0,0,.07);
 
-  /* Typography (swap to the official family when you get it) */
   --font-sans: "Inter", "Open Sans", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
 }
 
+/* Base */
+html, body { margin:0; background:var(--ire-base); color:var(--ire-contrast); font-family:var(--font-sans); }
+.container { max-width:var(--container); margin:0 auto; padding:0 24px; }
+
+/* Helpers */
+.card { background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:24px; }
+.grid { display:grid; gap:20px; }
+.grid-3 { grid-template-columns:repeat(3,1fr); }
+.btn { display:inline-block; padding:12px 18px; border-radius:999px; color:#fff; text-decoration:none;
+  background:linear-gradient(135deg, var(--ire-purple), var(--ire-blue));
+}
+.small { color:var(--ire-contrast-2); font-size:14px; }
