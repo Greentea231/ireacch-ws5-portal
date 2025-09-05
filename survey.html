@@ -1,28 +1,47 @@
-<!-- Header -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Survey | I-REACCH</title>
+  <link rel="stylesheet" href="assets/css/brand.css" />
+  <link rel="stylesheet" href="assets/css/header.css" />
+</head>
+<body>
+
 <header class="site-header">
   <div class="container bar">
     <a class="logo" href="index.html" aria-label="I-REACCH home">
-      <!-- use your saved logo path -->
-      <img src="assets/img/ireacch-logo.png" alt="I-REACCH">
+      <img src="assets/css/img/ireacch-logo.png" alt="I-REACCH" />
     </a>
-
     <button class="nav-toggle" aria-label="Open menu" aria-controls="primary-nav" aria-expanded="false">
-      <!-- Hamburger icon -->
       <svg viewBox="0 0 24 24"><rect x="4" y="7.5" width="16" height="1.5"/><rect x="4" y="15" width="16" height="1.5"/></svg>
     </button>
-
     <nav id="primary-nav" class="nav" role="navigation" aria-label="Primary">
-      <a href="index.html" class="active">Home</a>
-      <a href="workstreams.html">Workstreams</a>
-      <a href="team.html">Meet the team</a>
-      <a href="events.html">Events</a>
-      <a href="disrupting.html">Disrupting the Default</a>
-      <a href="funding.html">Funding opportunities</a>
-      <a href="social.html">Social media</a>
-      <a href="blog.html">Blog</a>
-      <!-- Add your new portal link here when ready -->
-      <a href="survey.html"><strong>Evaluation Portal</strong></a>
+      <a href="index.html">Home</a>
+      <a href="survey.html" class="active">Survey</a>
+      <a href="dashboard.html">Dashboard</a>
     </nav>
   </div>
 </header>
 
+<main class="container" style="padding:24px 0">
+  <div class="card">
+    <h2 style="margin:0 0 6px; color:var(--ire-purple)">Survey</h2>
+    <p class="small">Your responses are anonymous. This will take ~5 minutes.</p>
+
+    <!-- Replace the src with your Microsoft Forms embed URL -->
+    <iframe
+      title="I-REACCH Survey"
+      src=""
+      style="width:100%; height:640px; border:1px solid #ddd; border-radius:12px; background:#fff"
+      frameborder="0">
+    </iframe>
+
+    <p class="small" style="margin-top:12px">Responses so far: <strong>—</strong></p>
+  </div>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
