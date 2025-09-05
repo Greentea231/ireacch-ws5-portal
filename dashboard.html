@@ -1,28 +1,59 @@
-<!-- Header -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard | I-REACCH</title>
+  <link rel="stylesheet" href="assets/css/brand.css" />
+  <link rel="stylesheet" href="assets/css/header.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
 <header class="site-header">
   <div class="container bar">
     <a class="logo" href="index.html" aria-label="I-REACCH home">
-      <!-- use your saved logo path -->
-      <img src="assets/img/ireacch-logo.png" alt="I-REACCH">
+      <img src="assets/css/img/ireacch-logo.png" alt="I-REACCH" />
     </a>
-
     <button class="nav-toggle" aria-label="Open menu" aria-controls="primary-nav" aria-expanded="false">
-      <!-- Hamburger icon -->
       <svg viewBox="0 0 24 24"><rect x="4" y="7.5" width="16" height="1.5"/><rect x="4" y="15" width="16" height="1.5"/></svg>
     </button>
-
     <nav id="primary-nav" class="nav" role="navigation" aria-label="Primary">
-      <a href="index.html" class="active">Home</a>
-      <a href="workstreams.html">Workstreams</a>
-      <a href="team.html">Meet the team</a>
-      <a href="events.html">Events</a>
-      <a href="disrupting.html">Disrupting the Default</a>
-      <a href="funding.html">Funding opportunities</a>
-      <a href="social.html">Social media</a>
-      <a href="blog.html">Blog</a>
-      <!-- Add your new portal link here when ready -->
-      <a href="survey.html"><strong>Evaluation Portal</strong></a>
+      <a href="index.html">Home</a>
+      <a href="survey.html">Survey</a>
+      <a href="dashboard.html" class="active">Dashboard</a>
     </nav>
   </div>
 </header>
 
+<main class="container" style="padding:24px 0">
+  <div class="grid grid-3">
+    <div class="card"><div class="small">Responses</div><h2 id="kpiResponses" style="margin:.2em 0">196</h2></div>
+    <div class="card"><div class="small">Avg score</div><h2 id="kpiAvg" style="margin:.2em 0">4.2</h2></div>
+    <div class="card"><div class="small">Completion</div><h2 id="kpiCompletion" style="margin:.2em 0">85%</h2></div>
+  </div>
+
+  <div class="grid grid-3" style="margin-top:20px">
+    <div class="card"><canvas id="chart1"></canvas></div>
+    <div class="card"><canvas id="chart2"></canvas></div>
+    <div class="card"><canvas id="chart3"></canvas></div>
+  </div>
+</main>
+
+<script src="script.js"></script>
+<script>
+  // Quick demo charts (dummy data). Replace later with CSV -> Chart.js.
+  new Chart(document.getElementById('chart1'), { type:'bar',
+    data:{ labels:['A','B','C'], datasets:[{ label:'By Role', data:[12,19,7] }] },
+    options:{ plugins:{ legend:{display:false} } }
+  });
+  new Chart(document.getElementById('chart2'), { type:'pie',
+    data:{ labels:['X','Y','Z'], datasets:[{ data:[10,8,6] }] }
+  });
+  new Chart(document.getElementById('chart3'), { type:'line',
+    data:{ labels:['Mon','Tue','Wed','Thu','Fri'], datasets:[{ label:'Responses/day', data:[3,6,5,9,4] }] },
+    options:{ plugins:{ legend:{display:false} } }
+  });
+</script>
+</body>
+</html>
