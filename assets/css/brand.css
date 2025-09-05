@@ -1,29 +1,73 @@
+/* ===== I-REACCH brand tokens (approximate to the live site) ===== */
 :root{
-  /* Colours from the I-REACCH site tokens you shared */
-  --ire-base: #f9f9f9;          /* page background */
-  --ire-contrast: #111111;      /* main text */
-  --ire-contrast-2: #636363;    /* secondary text */
-  --ire-purple: #4a007f;        /* custom dark purple */
-  --ire-blue: #00b0f0;          /* custom blue */
-  --ire-dark-blue: #3a71b0;     /* nav link colour */
-  --ire-grey: #e7e6e6;
+  /* Colours */
+  --ire-white: #ffffff;
+  --ire-bg: #ffffff;                 /* page background */
+  --ire-ink: #1a1a1a;                /* body text (nearly black) */
+  --ire-ink-2: #4f4f4f;              /* secondary text */
+  --ire-link: #3a71b0;               /* dark blue links like site */
+  --ire-hero: #cfe6e6;               /* pale teal hero band */
+  --ire-border: #e7e6e6;
 
-  --container: 1200px;
+  /* Headline colour (close to site’s purple) */
+  --ire-headline: #5b2ca1;
+
+  /* Layout */
+  --container: 1200px;               /* matches “wide” size on site */
+  --content: 820px;                  /* readable text line length */
   --radius: 12px;
-  --shadow: 0 6px 18px rgba(0,0,0,.07);
+  --shadow: 0 8px 22px rgba(0,0,0,.06);
 
+  /* Typography (use Inter to approximate) */
   --font-sans: "Inter", "Open Sans", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+
+  /* Type scale */
+  --fs-body: 18px;       /* base body size is fairly large on site */
+  --lh-body: 1.7;
+  --fs-h1: clamp(32px, 3.3vw, 44px);
+  --fs-h2: clamp(26px, 2.4vw, 34px);
+  --fw-bold: 800;
+  --fw-semi: 600;
 }
 
-/* Base */
-html, body { margin:0; background:var(--ire-base); color:var(--ire-contrast); font-family:var(--font-sans); }
-.container { max-width:var(--container); margin:0 auto; padding:0 24px; }
-
-/* Helpers */
-.card { background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:24px; }
-.grid { display:grid; gap:20px; }
-.grid-3 { grid-template-columns:repeat(3,1fr); }
-.btn { display:inline-block; padding:12px 18px; border-radius:999px; color:#fff; text-decoration:none;
-  background:linear-gradient(135deg, var(--ire-purple), var(--ire-blue));
+/* ===== Base ===== */
+html, body{
+  margin:0;
+  background:var(--ire-bg);
+  color:var(--ire-ink);
+  font-family:var(--font-sans);
+  font-size:var(--fs-body);
+  line-height:var(--lh-body);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
 }
-.small { color:var(--ire-contrast-2); font-size:14px; }
+.container{max-width:var(--container);margin:0 auto;padding:0 24px;}
+.content {max-width:var(--content);}
+
+/* Headings closer to site */
+h1{font-size:var(--fs-h1); font-weight:var(--fw-bold); color:var(--ire-headline); margin:0 0 12px;}
+h2{font-size:var(--fs-h2); font-weight:var(--fw-bold); margin:0 0 10px;}
+p{margin:0 0 16px; color:var(--ire-ink-2);}
+
+/* Links styled like site (no button pills) */
+a{color:var(--ire-link); text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* Components */
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:28px;}
+.btn{
+  display:inline-block; padding:12px 18px; border-radius:999px;
+  color:#fff; text-decoration:none; background:linear-gradient(135deg,#5b2ca1,#00b0f0);
+  font-weight:var(--fw-semi);
+}
+
+/* Grids (if needed) */
+.grid{display:grid;gap:24px;}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+
+/* Hero band like the site’s pale teal strip */
+.hero{
+  background:var(--ire-hero);
+  padding:40px 0;        /* generous vertical breathing room */
+  margin-bottom:32px;
+}
