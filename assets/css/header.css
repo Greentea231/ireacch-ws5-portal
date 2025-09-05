@@ -1,25 +1,53 @@
-/* ===== Header & Nav to look like I-REACCH site ===== */
-.site-header{background:#fff;border-bottom:1px solid var(--ire-border);}
-.site-header .bar{display:flex;align-items:center;justify-content:space-between;height:78px;}
-.logo img{height:44px;width:auto;display:block;}
-
-.nav{display:flex;gap:28px;align-items:center;}            /* larger gaps like site */
-.nav a{
-  color:#2f5d98;                                           /* closer to site link colour */
-  font-weight:500;
-  padding:10px 0;                                          /* no pill background */
+/* ===== Header & Nav (closer to I-REACCH) ===== */
+.site-header{
+  background:#fff;
+  border-bottom:1px solid #e7e6e6;
 }
-.nav a.active{font-weight:700; text-decoration:underline;} /* active looks bold/underlined */
-.nav a:hover{text-decoration:underline;}
+.site-header .bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  height:84px;                 /* taller like the official site */
+}
 
-.nav-toggle{display:none;background:none;border:0;cursor:pointer;}
-.nav-toggle svg{width:26px;height:26px;fill:var(--ire-ink);}
+.logo img{
+  height:48px;                 /* logo size to match */
+  width:auto;
+  display:block;
+}
 
-/* Mobile */
+/* desktop nav */
+.nav{
+  display:flex;
+  gap:32px;                    /* roomy spacing like the site */
+  align-items:center;
+}
+.nav a{
+  color:#2f5d98;               /* link blue close to site */
+  text-decoration:none;
+  font-weight:600;             /* slightly bold */
+  font-size:18px;
+  padding:10px 0;              /* no pill background */
+  line-height:1;               /* clean baseline */
+}
+.nav a:hover{ text-decoration:underline; }
+.nav a.active{
+  font-weight:800;
+  text-decoration:underline;
+}
+
+/* mobile */
+.nav-toggle{ display:none; background:none; border:0; cursor:pointer; }
+.nav-toggle svg{ width:26px; height:26px; fill:#1a1a1a; }
+
 @media (max-width:900px){
-  .nav{display:none;position:absolute;top:78px;left:0;right:0;background:#fff;
-       border-bottom:1px solid var(--ire-border);padding:12px 24px;flex-direction:column;}
-  .nav.open{display:flex;}
-  .nav a{padding:12px 0;}
-  .nav-toggle{display:block;}
+  .nav{
+    display:none;
+    position:absolute; top:84px; left:0; right:0;
+    background:#fff; border-bottom:1px solid #e7e6e6;
+    padding:12px 24px; flex-direction:column; gap:8px;
+  }
+  .nav.open{ display:flex; }
+  .nav a{ padding:12px 0; }
+  .nav-toggle{ display:block; }
 }
