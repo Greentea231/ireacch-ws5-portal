@@ -11,9 +11,9 @@
   <link rel="stylesheet" href="style.css" />
 
   <style>
-    /* Page layout */
+    /* Layout & components (page-local) */
     .wrap{max-width:1180px;margin:0 auto;padding:24px}
-    .grid{display:grid;gap:20px;grid-template-columns:1.2fr 1.8fr}
+    .grid{display:grid;gap:20px;grid-template-columns:1.15fr 1.85fr}
     @media (max-width:1000px){.grid{grid-template-columns:1fr}}
     .panel{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,.08)}
     .panel .hd{padding:16px 18px;border-bottom:1px solid #e9eef6;font-weight:800}
@@ -26,24 +26,21 @@
     .btn.secondary{background:#eef4ff;color:#2f5d98}
     .muted{color:#687b8a}
     .pill{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;background:#eef4ff;color:#2f5d98;margin:.15rem .25rem 0 0}
+    .badge{display:inline-block;background:#eef7f2;color:#236a4a;border-radius:8px;padding:2px 8px;font-size:12px;font-weight:700;margin-left:6px}
+    .consent{font-size:.9rem;color:#6b7b8c;margin-top:.35rem}
 
     /* Browse list */
     .toolbar{display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+    .toolbar input{max-width:260px}
     .cards{display:grid;gap:16px;grid-template-columns:repeat(2,1fr)}
     @media (max-width:880px){.cards{grid-template-columns:1fr}}
     .card{border:1px solid #e9eef6;border-radius:12px;padding:14px 16px}
-    .badge{display:inline-block;background:#eef7f2;color:#236a4a;border-radius:8px;padding:2px 8px;font-size:12px;font-weight:700;margin-left:6px}
-
-    /* Adopt + RAG meter */
+    .stats{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:#5b6b82;margin-top:6px}
+    .stat{background:#f6f7fb;border:1px solid #e5e8f1;border-radius:999px;padding:2px 10px}
     .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
-    .adopt{border:1px solid #dfe6ef;background:#f7faff;color:#2f5d98}
-    .meter{display:flex;gap:4px;align-items:center}
-    .dot{width:12px;height:12px;border-radius:50%;opacity:.35;border:1px solid rgba(0,0,0,.08)}
-    .dot.r{background:#e74c3c}
-    .dot.a{background:#f1c40f}
-    .dot.g{background:#2ecc71}
-    .vote{border:1px solid #dfe6ef;border-radius:999px;padding:4px 10px;background:#fff;cursor:pointer;font-weight:700}
-    .vote.active{background:#f6f7fb}
+    .vote{border:1px solid #dfe6ef;border-radius:999px;padding:6px 12px;background:#fff;cursor:pointer;font-weight:700}
+    .vote:hover{background:#f6f7fb}
+    .link{border:0;background:none;color:#2f5d98;text-decoration:underline;cursor:pointer;padding:0}
 
     /* Word cloud */
     .cloud-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
@@ -51,7 +48,6 @@
     .bubble{line-height:1;border-radius:999px;padding:6px 10px;background:#f6f9ff;border:1px solid #e2ebff;color:#2f5d98;font-weight:700;cursor:pointer;user-select:none;transition:transform .06s ease}
     .bubble:hover{transform:scale(1.05)}
     .empty{padding:18px;border:1px dashed #dfe6ef;border-radius:10px;text-align:center;color:#6b7b8c}
-    .consent{font-size:.9rem;color:#6b7b8c;margin-top:.35rem}
   </style>
 </head>
 <body>
@@ -73,7 +69,7 @@
   <section class="hero">
     <div class="container content">
       <h1>Best practices</h1>
-      <p>Open space to share, browse and evaluate practices. Use the word-cloud to explore by School/College.</p>
+      <p>Open space to share, browse and evaluate practices. Explore by School/College and sort by what helps most.</p>
     </div>
   </section>
 
@@ -90,12 +86,14 @@
               <input id="bp-title" type="text" placeholder="e.g., Mentoring circles for new PGRs" />
             </div>
           </div>
+
           <div class="row">
             <div style="flex:1">
               <label for="bp-tags">Tags (comma separated)</label>
               <input id="bp-tags" type="text" placeholder="mentoring, onboarding, inclusion" />
             </div>
           </div>
+
           <div class="row">
             <div style="flex:1">
               <label for="bp-school">School / College</label>
@@ -109,12 +107,14 @@
               </select>
             </div>
           </div>
+
           <div class="row">
             <div style="flex:1">
               <label for="bp-body">Description</label>
               <textarea id="bp-body" placeholder="How does it work? Who benefits? Any tips to adopt?"></textarea>
             </div>
           </div>
+
           <div class="row" style="gap:10px">
             <button id="bp-save" class="btn">Add practice</button>
             <button id="bp-clear" class="btn secondary" type="button">Clear</button>
@@ -133,14 +133,14 @@
               <option>Doctoral College / PGR</option>
               <option>Professional Services</option>
             </select>
-            <span class="muted">Size shows how often a tag appears in the selected school.</span>
+            <span class="muted">Size shows how often a tag appears in the selected School/College.</span>
           </div>
           <div id="cloud" class="cloud"></div>
           <div id="cloud-empty" class="empty" style="display:none">No tags yet. Add some practices to populate the cloud.</div>
         </div>
       </section>
 
-      <!-- RIGHT: BROWSE / FILTER / EVALUATE -->
+      <!-- RIGHT: BROWSE / FILTER / SORT / EVALUATE -->
       <section class="panel" aria-labelledby="browse-hd">
         <div class="hd" id="browse-hd">Browse practices</div>
         <div class="bd">
@@ -155,6 +155,13 @@
               <option>Professional Services</option>
             </select>
             <select id="filter-tag" title="Filter by Tag"><option value="">All tags</option></select>
+            <select id="sortBy" title="Sort by">
+              <option value="helpful">Most helpful (default)</option>
+              <option value="trending">Trending</option>
+              <option value="proven">Proven</option>
+              <option value="new">New</option>
+              <option value="discussed">Most discussed</option>
+            </select>
           </div>
 
           <div id="cards" class="cards"></div>
@@ -165,13 +172,13 @@
   </main>
 
   <script>
-    /* ------------ Data layer (localStorage now; replace with backend later) ------------- */
-    const KEY = 'bp.items.v2';
+    /* ---------------- Data (localStorage for prototype) ---------------- */
+    const KEY = 'bp.items.v3';
 
     function loadAll(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; } }
     function saveAll(items){ localStorage.setItem(KEY, JSON.stringify(items)); }
 
-    /* ------------ DOM refs ------------- */
+    /* ---------------- DOM refs ---------------- */
     const $title = document.getElementById('bp-title');
     const $tags  = document.getElementById('bp-tags');
     const $school= document.getElementById('bp-school');
@@ -182,12 +189,17 @@
     const $q     = document.getElementById('q');
     const $filterSchool = document.getElementById('filter-school');
     const $filterTag    = document.getElementById('filter-tag');
+    const $sortBy = document.getElementById('sortBy');
     const $cards = document.getElementById('cards');
     const $empty = document.getElementById('empty');
 
     const $cloud = document.getElementById('cloud');
     const $cloudEmpty = document.getElementById('cloud-empty');
     const $cloudSchool = document.getElementById('cloud-school');
+
+    /* ---------------- Helpers ---------------- */
+    const now = () => Date.now();
+    const DAYS = ms => ms / (1000*60*60*24);
 
     function escapeHTML(s){ return (s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
 
@@ -203,7 +215,6 @@
       $filterTag.innerHTML = `<option value="">All tags</option>${options}`;
     }
 
-    /* ------------ Add / seed ------------- */
     function addItem({title,tags,school,body}){
       const items = loadAll();
       items.unshift({
@@ -212,8 +223,10 @@
         body: body.trim(),
         school: school || '',
         tags: (tags||[]).map(t => t.trim()).filter(Boolean),
-        adopted: 0,
-        votes: { r:0, a:0, g:0 } // traffic light votes
+        createdAt: now(),
+        adoption: { adopted:0, considering:0, notForUs:0 },
+        outcome:  { worked:0, mixed:0, didnt:0 },
+        notes: [] // {text, at}
       });
       saveAll(items);
     }
@@ -236,56 +249,42 @@
       }
     })();
 
-    /* ------------ Render list ------------- */
-    function renderList(){
-      const q = ($q.value||'').toLowerCase().trim();
-      const fs = $filterSchool.value;
-      const ft = $filterTag.value;
-
-      const items = loadAll().filter(i=>{
-        const matchesQ = !q || i.title.toLowerCase().includes(q) || i.body.toLowerCase().includes(q);
-        const matchesS = !fs || i.school === fs;
-        const matchesT = !ft || (i.tags||[]).includes(ft);
-        return matchesQ && matchesS && matchesT;
-      });
-
-      if(items.length === 0){
-        $cards.innerHTML = '';
-        $empty.style.display = 'block';
-        return;
-      }
-      $empty.style.display = 'none';
-
-      $cards.innerHTML = items.map(i => {
-        const totalVotes = i.votes.r + i.votes.a + i.votes.g;
-        const ragTip = `R:${i.votes.r}  A:${i.votes.a}  G:${i.votes.g}`;
-        return `
-          <article class="card" data-id="${i.id}">
-            <h3 style="margin:0 0 6px 0">${escapeHTML(i.title)}
-              ${i.school ? `<span class="badge">${escapeHTML(i.school)}</span>` : ''}</h3>
-            <p class="muted" style="margin:.15rem 0 .35rem">${escapeHTML(i.body)}</p>
-            <div>${(i.tags||[]).map(t=>`<span class="pill">${escapeHTML(t)}</span>`).join('')}</div>
-
-            <div class="actions">
-              <button class="btn adopt" data-action="adopt">Adopt / considering (${i.adopted})</button>
-
-              <div class="meter" title="${ragTip}">
-                <span class="muted" style="margin-right:4px">Rate:</span>
-                <button class="vote" data-action="vote" data-v="r" title="Red – not successful">Red</button>
-                <div class="dot r" style="opacity:${i.votes.r?1:.35}"></div>
-                <button class="vote" data-action="vote" data-v="a" title="Amber – mixed">Amber</button>
-                <div class="dot a" style="opacity:${i.votes.a?1:.35}"></div>
-                <button class="vote" data-action="vote" data-v="g" title="Green – successful">Green</button>
-                <div class="dot g" style="opacity:${i.votes.g?1:.35}"></div>
-                ${totalVotes? `<span class="muted" style="margin-left:6px">(${totalVotes})</span>`:''}
-              </div>
-            </div>
-          </article>
-        `;
-      }).join('');
+    /* ---------------- Scoring / Sorting ---------------- */
+    function recencyBoost(createdAt){
+      const days = DAYS(now() - createdAt);
+      return days <= 30 ? 1 : 0; // simple +1 boost if within last 30 days
     }
 
-    /* ------------ Word-cloud (by School) ------------- */
+    function scoreHelpful(i){
+      // Transparent formula (default):
+      // score = 2*Adopted + 1*Considering + 3*Worked + 1*Mixed + recencyBoost
+      const a = i.adoption, o = i.outcome;
+      return 2*(a.adopted||0) + 1*(a.considering||0) + 3*(o.worked||0) + 1*(o.mixed||0) + recencyBoost(i.createdAt);
+    }
+
+    function scoreTrending(i){
+      // Interest + recency
+      const a = i.adoption;
+      return 1.5*(a.considering||0) + 1*(a.adopted||0) + recencyBoost(i.createdAt);
+    }
+
+    function scoreProven(i){
+      // Proven effectiveness: Worked strong, Mixed weak positive, Didn’t negative
+      const o = i.outcome;
+      return 3*(o.worked||0) + 1*(o.mixed||0) - 1*(o.didnt||0);
+    }
+
+    function sortItems(items, mode){
+      const arr = [...items];
+      if(mode === 'new') return arr.sort((a,b)=>b.createdAt - a.createdAt);
+      if(mode === 'discussed') return arr.sort((a,b)=>(b.notes?.length||0) - (a.notes?.length||0));
+      if(mode === 'trending') return arr.sort((a,b)=>scoreTrending(b) - scoreTrending(a));
+      if(mode === 'proven') return arr.sort((a,b)=>scoreProven(b) - scoreProven(a));
+      // default: helpful
+      return arr.sort((a,b)=>scoreHelpful(b) - scoreHelpful(a));
+    }
+
+    /* ---------------- Word-cloud ---------------- */
     function buildTagFreq(items, school){
       const freq = new Map();
       items.forEach(i=>{
@@ -312,8 +311,8 @@
 
       function sizeFor(n){
         if(min===max) return 16;
-        const t = (n - min)/(max - min); // 0..1
-        return 13 + Math.round(t * 22);  // 13px..35px
+        const t = (n - min)/(max - max === 0 ? 1 : (max - min)); // safety
+        return 13 + Math.round(((n - min)/(max - min)) * 22);     // 13..35px
       }
 
       $cloud.innerHTML = pairs.map(([tag,count])=>{
@@ -321,7 +320,6 @@
         return `<span class="bubble" data-tag="${escapeHTML(tag)}" style="font-size:${fs}px" title="${tag}: ${count}">${escapeHTML(tag)}</span>`;
       }).join('');
 
-      // Clicking a bubble filters the list on that tag
       $cloud.querySelectorAll('.bubble').forEach(el=>{
         el.addEventListener('click', () => {
           $filterTag.value = el.dataset.tag;
@@ -331,24 +329,95 @@
       });
     }
 
-    /* ------------ Interactions ------------- */
+    /* ---------------- Render list ---------------- */
+    function renderList(){
+      const q = ($q.value||'').toLowerCase().trim();
+      const fs = $filterSchool.value;
+      const ft = $filterTag.value;
+      const mode = $sortBy.value;
+
+      let items = loadAll().filter(i=>{
+        const matchesQ = !q || i.title.toLowerCase().includes(q) || i.body.toLowerCase().includes(q);
+        const matchesS = !fs || i.school === fs;
+        const matchesT = !ft || (i.tags||[]).includes(ft);
+        return matchesQ && matchesS && matchesT;
+      });
+
+      items = sortItems(items, mode);
+
+      if(items.length === 0){
+        $cards.innerHTML = '';
+        $empty.style.display = 'block';
+        return;
+      }
+      $empty.style.display = 'none';
+
+      $cards.innerHTML = items.map(i => {
+        const a = i.adoption, o = i.outcome;
+        return `
+          <article class="card" data-id="${i.id}">
+            <h3 style="margin:0 0 6px 0">${escapeHTML(i.title)}
+              ${i.school ? `<span class="badge">${escapeHTML(i.school)}</span>` : ''}</h3>
+            <p class="muted" style="margin:.15rem 0 .35rem">${escapeHTML(i.body)}</p>
+            <div>${(i.tags||[]).map(t=>`<span class="pill">${escapeHTML(t)}</span>`).join('')}</div>
+
+            <div class="stats">
+              <span class="stat">Adopted ${a.adopted||0}</span>
+              <span class="stat">Considering ${a.considering||0}</span>
+              <span class="stat">Not for us ${a.notForUs||0}</span>
+              <span class="stat">Worked ${o.worked||0}</span>
+              <span class="stat">Mixed ${o.mixed||0}</span>
+              <span class="stat">Didn’t ${o.didnt||0}</span>
+              <span class="stat">Notes ${(i.notes?.length||0)}</span>
+            </div>
+
+            <div class="actions">
+              <!-- Adoption intent -->
+              <button class="vote" data-action="adopt" data-k="adopted">Adopted</button>
+              <button class="vote" data-action="adopt" data-k="considering">Considering</button>
+              <button class="vote" data-action="adopt" data-k="notForUs">Not for us</button>
+
+              <!-- Effectiveness -->
+              <button class="vote" data-action="outcome" data-k="worked">Worked</button>
+              <button class="vote" data-action="outcome" data-k="mixed">Mixed</button>
+              <button class="vote" data-action="outcome" data-k="didnt">Didn’t work</button>
+
+              <!-- Context -->
+              <button class="link" data-action="note">Add context</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    /* ---------------- Interactions ---------------- */
     document.addEventListener('click', (ev)=>{
       const card = ev.target.closest('.card');
       if(!card) return;
       const id = Number(card.dataset.id);
       const items = loadAll();
-      const item = items.find(i=>i.id===id);
-      if(!item) return;
+      const i = items.find(x=>x.id===id);
+      if(!i) return;
 
       const action = ev.target.dataset.action;
       if(action === 'adopt'){
-        item.adopted = (item.adopted||0) + 1;
+        const k = ev.target.dataset.k; // adopted | considering | notForUs
+        i.adoption[k] = (i.adoption[k]||0) + 1;
         saveAll(items); renderList();
       }
-      if(action === 'vote'){
-        const v = ev.target.dataset.v; // r|a|g
-        item.votes[v] = (item.votes[v]||0) + 1;
+      if(action === 'outcome'){
+        const k = ev.target.dataset.k; // worked | mixed | didnt
+        i.outcome[k] = (i.outcome[k]||0) + 1;
         saveAll(items); renderList();
+      }
+      if(action === 'note'){
+        const txt = prompt('Add a brief context note (max 140 chars):') || '';
+        const clean = txt.trim().slice(0,140);
+        if(clean){
+          i.notes = i.notes || [];
+          i.notes.push({ text: clean, at: now() });
+          saveAll(items); renderList();
+        }
       }
     });
 
@@ -370,6 +439,7 @@
     $q.addEventListener('input', renderList);
     $filterSchool.addEventListener('change', renderList);
     $filterTag.addEventListener('change', renderList);
+    $sortBy.addEventListener('change', renderList);
     $cloudSchool.addEventListener('change', renderCloud);
 
     // Initial paint
