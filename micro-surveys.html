@@ -88,79 +88,93 @@
   </main>
 
   <script>
-    // Your surveys here
-    const SURVEYS = [
-      {
-        id: "survey1",
-        title: "Research culture (Q1)",
-        minutes: 1,
-        audience: "Staff/PGR",
-        url: "https://forms.office.com/Pages/ResponsePage.aspx?id=as2-rtQxAUuVzoJ0r-hT2buX6ZV7MhVCmSvPlC6dFa1UQ09CV1JUOEhQVUZXWUtOWFZPOVY1OUdZQy4u&embed=true"
-      }
-      // add more surveys here later
-    ];
-
-    const key = id => `micro.${id}.done`;
-    const isDone = id => localStorage.getItem(key(id)) === 'true';
-    const setDone = id => localStorage.setItem(key(id),'true');
-
-    const $list = document.getElementById('list');
-    const $frame = document.getElementById('formFrame');
-    const $title = document.getElementById('currTitle');
-    const $meta  = document.getElementById('currMeta');
-    const $badge = document.getElementById('currBadge');
-    const $next  = document.getElementById('nextBtn');
-    const $mark  = document.getElementById('markDone');
-
-    let current = null;
-
-    function renderList(activeId){
-      $list.innerHTML = SURVEYS.map(s => {
-        const done = isDone(s.id);
-        const active = s.id === activeId ? 'active' : '';
-        const status = done ? '<span class="badge done">Completed</span>' : '<span class="badge">New</span>';
-        return `
-          <div class="item ${active}" data-id="${s.id}">
-            <div><div class="title">${s.title}</div><div class="sub">~${s.minutes} min • ${s.audience}</div></div>
-            <div class="badges">${status}</div>
-          </div>`;
-      }).join('');
-      [...$list.querySelectorAll('.item')].forEach(el => {
-        el.addEventListener('click', () => load(el.dataset.id));
-      });
+  // Example surveys — replace urls later with your 14 surveys
+  const SURVEYS = [
+    {
+      id: "survey1",
+      title: "Research culture (Q1)",
+      minutes: 1,
+      audience: "Staff/PGR",
+      url: "https://forms.office.com/Pages/ResponsePage.aspx?id=as2-rtQxAUuVzoJ0r-hT2buX6ZV7MhVCmSvPlC6dFa1UQ09CV1JUOEhQVUZXWUtOWFZPOVY1OUdZQy4u&embed=true"
+    },
+    {
+      id: "survey2",
+      title: "Equity in recruitment (Q2)",
+      minutes: 1,
+      audience: "Researchers",
+      url: "https://forms.office.com/Pages/ResponsePage.aspx?id=as2-rtQxAUuVzoJ0r-hT2buX6ZV7MhVCmSvPlC6dFa1UQ09CV1JUOEhQVUZXWUtOWFZPOVY1OUdZQy4u&embed=true"
+    },
+    {
+      id: "survey3",
+      title: "Leadership in academia (Q3)",
+      minutes: 1,
+      audience: "All staff",
+      url: "https://forms.office.com/Pages/ResponsePage.aspx?id=as2-rtQxAUuVzoJ0r-hT2buX6ZV7MhVCmSvPlC6dFa1UQ09CV1JUOEhQVUZXWUtOWFZPOVY1OUdZQy4u&embed=true"
     }
+  ];
 
-    function load(id){
-      const s = SURVEYS.find(x => x.id === id);
-      if(!s) return;
-      current = s;
-      $title.textContent = s.title;
-      $meta.textContent = `~${s.minutes} min • ${s.audience}`;
-      const done = isDone(id);
-      $badge.textContent = done ? 'Completed' : 'New';
-      $badge.className = done ? 'badge done' : 'badge';
-      $frame.src = s.url;
-      renderList(id);
-    }
+  const key = id => `micro.${id}.done`;
+  const isDone = id => localStorage.getItem(key(id)) === 'true';
+  const setDone = id => localStorage.setItem(key(id),'true');
 
-    function nextUnfinished(){
-      const idx = current ? SURVEYS.findIndex(s => s.id === current.id) : -1;
-      for(let i = 1; i <= SURVEYS.length; i++){
-        const j = (idx + i) % SURVEYS.length;
-        if(!isDone(SURVEYS[j].id)) return load(SURVEYS[j].id);
-      }
-      alert('All micro surveys completed on this device — thank you!');
-    }
+  const $list = document.getElementById('list');
+  const $frame = document.getElementById('formFrame');
+  const $title = document.getElementById('currTitle');
+  const $meta  = document.getElementById('currMeta');
+  const $badge = document.getElementById('currBadge');
+  const $next  = document.getElementById('nextBtn');
+  const $mark  = document.getElementById('markDone');
 
-    $mark.addEventListener('click', () => {
-      if(!current) return;
-      setDone(current.id);
-      load(current.id);
+  let current = null;
+
+  function renderList(activeId){
+    $list.innerHTML = SURVEYS.map(s => {
+      const done = isDone(s.id);
+      const active = s.id === activeId ? 'active' : '';
+      const status = done ? '<span class="badge done">Completed</span>' : '<span class="badge">New</span>';
+      return `
+        <div class="item ${active}" data-id="${s.id}">
+          <div><div class="title">${s.title}</div><div class="sub">~${s.minutes} min • ${s.audience}</div></div>
+          <div class="badges">${status}</div>
+        </div>`;
+    }).join('');
+    [...$list.querySelectorAll('.item')].forEach(el => {
+      el.addEventListener('click', () => load(el.dataset.id));
     });
-    $next.addEventListener('click', nextUnfinished);
+  }
 
-    renderList();
-    if(SURVEYS[0]) load(SURVEYS[0].id);
-  </script>
+  function load(id){
+    const s = SURVEYS.find(x => x.id === id);
+    if(!s) return;
+    current = s;
+    $title.textContent = s.title;
+    $meta.textContent = `~${s.minutes} min • ${s.audience}`;
+    const done = isDone(id);
+    $badge.textContent = done ? 'Completed' : 'New';
+    $badge.className = done ? 'badge done' : 'badge';
+    $frame.src = s.url;
+    renderList(id);
+  }
+
+  function nextUnfinished(){
+    const idx = current ? SURVEYS.findIndex(s => s.id === current.id) : -1;
+    for(let i = 1; i <= SURVEYS.length; i++){
+      const j = (idx + i) % SURVEYS.length;
+      if(!isDone(SURVEYS[j].id)) return load(SURVEYS[j].id);
+    }
+    alert('All micro surveys completed on this device — thank you!');
+  }
+
+  $mark.addEventListener('click', () => {
+    if(!current) return;
+    setDone(current.id);
+    load(current.id);
+  });
+  $next.addEventListener('click', nextUnfinished);
+
+  renderList();
+  if(SURVEYS[0]) load(SURVEYS[0].id);
+</script>
+
 </body>
 </html>
