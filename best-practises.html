@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>I-REACCH • Best Practices</title>
+
+  <!-- Reuse your site styles -->
+  <link rel="stylesheet" href="assets/css/brand.css" />
+  <link rel="stylesheet" href="assets/css/header.css" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* Page layout */
+    .wrap{max-width:1180px;margin:0 auto;padding:24px}
+    .grid{display:grid;gap:20px;grid-template-columns:1.2fr 1.8fr}
+    @media (max-width:1000px){.grid{grid-template-columns:1fr}}
+    .panel{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(0,0,0,.08)}
+    .panel .hd{padding:16px 18px;border-bottom:1px solid #e9eef6;font-weight:800}
+    .panel .bd{padding:16px 18px}
+    label{font-weight:700;margin:.2rem 0 .35rem;display:block}
+    input[type=text],textarea,select{width:100%;padding:10px 12px;border:1px solid #dfe6ef;border-radius:10px;font:inherit}
+    textarea{min-height:120px;resize:vertical}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{border:0;border-radius:999px;padding:10px 16px;font-weight:800;color:#fff;background:linear-gradient(135deg,#5b2ca1,#00b0f0);cursor:pointer}
+    .btn.secondary{background:#eef4ff;color:#2f5d98}
+    .muted{color:#687b8a}
+    .pill{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;background:#eef4ff;color:#2f5d98;margin:.15rem .25rem 0 0}
+
+    /* Browse list */
+    .toolbar{display:flex;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+    .cards{display:grid;gap:16px;grid-template-columns:repeat(2,1fr)}
+    @media (max-width:880px){.cards{grid-template-columns:1fr}}
+    .card{border:1px solid #e9eef6;border-radius:12px;padding:14px 16px}
+    .badge{display:inline-block;background:#eef7f2;color:#236a4a;border-radius:8px;padding:2px 8px;font-size:12px;font-weight:700;margin-left:6px}
+
+    /* Adopt + RAG meter */
+    .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+    .adopt{border:1px solid #dfe6ef;background:#f7faff;color:#2f5d98}
+    .meter{display:flex;gap:4px;align-items:center}
+    .dot{width:12px;height:12px;border-radius:50%;opacity:.35;border:1px solid rgba(0,0,0,.08)}
+    .dot.r{background:#e74c3c}
+    .dot.a{background:#f1c40f}
+    .dot.g{background:#2ecc71}
+    .vote{border:1px solid #dfe6ef;border-radius:999px;padding:4px 10px;background:#fff;cursor:pointer;font-weight:700}
+    .vote.active{background:#f6f7fb}
+
+    /* Word cloud */
+    .cloud-toolbar{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+    .cloud{min-height:210px;border:1px dashed #dfe6ef;border-radius:12px;padding:14px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+    .bubble{line-height:1;border-radius:999px;padding:6px 10px;background:#f6f9ff;border:1px solid #e2ebff;color:#2f5d98;font-weight:700;cursor:pointer;user-select:none;transition:transform .06s ease}
+    .bubble:hover{transform:scale(1.05)}
+    .empty{padding:18px;border:1px dashed #dfe6ef;border-radius:10px;text-align:center;color:#6b7b8c}
+    .consent{font-size:.9rem;color:#6b7b8c;margin-top:.35rem}
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container bar">
+      <a class="logo" href="index.html"><img src="assets/img/ireacch-logo.png" alt="I-REACCH"></a>
+      <nav id="primary-nav" class="nav">
+        <a href="index.html">Home</a>
+        <a href="micro-surveys.html">Surveys</a>
+        <a class="active" href="best-practices.html"><strong>Best Practices</strong></a>
+        <a href="dashboard.html">Dashboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container content">
+      <h1>Best practices</h1>
+      <p>Open space to share, browse and evaluate practices. Use the word-cloud to explore by School/College.</p>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <div class="grid">
+
+      <!-- LEFT: SUBMIT + WORD CLOUD -->
+      <section class="panel" aria-labelledby="submit-hd">
+        <div class="hd" id="submit-hd">Submit a practice</div>
+        <div class="bd">
+          <div class="row">
+            <div style="flex:1">
+              <label for="bp-title">Title</label>
+              <input id="bp-title" type="text" placeholder="e.g., Mentoring circles for new PGRs" />
+            </div>
+          </div>
+          <div class="row">
+            <div style="flex:1">
+              <label for="bp-tags">Tags (comma separated)</label>
+              <input id="bp-tags" type="text" placeholder="mentoring, onboarding, inclusion" />
+            </div>
+          </div>
+          <div class="row">
+            <div style="flex:1">
+              <label for="bp-school">School / College</label>
+              <select id="bp-school">
+                <option value="">Select…</option>
+                <option>College of Life Sciences</option>
+                <option>College of Science & Engineering</option>
+                <option>College of Social Sciences, Arts & Humanities</option>
+                <option>Doctoral College / PGR</option>
+                <option>Professional Services</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div style="flex:1">
+              <label for="bp-body">Description</label>
+              <textarea id="bp-body" placeholder="How does it work? Who benefits? Any tips to adopt?"></textarea>
+            </div>
+          </div>
+          <div class="row" style="gap:10px">
+            <button id="bp-save" class="btn">Add practice</button>
+            <button id="bp-clear" class="btn secondary" type="button">Clear</button>
+          </div>
+          <p class="consent">Please avoid personal data. Submissions may be moderated before publishing.</p>
+        </div>
+
+        <div class="hd">Explore as a word-cloud</div>
+        <div class="bd">
+          <div class="cloud-toolbar">
+            <select id="cloud-school">
+              <option value="">All Schools / Colleges</option>
+              <option>College of Life Sciences</option>
+              <option>College of Science & Engineering</option>
+              <option>College of Social Sciences, Arts & Humanities</option>
+              <option>Doctoral College / PGR</option>
+              <option>Professional Services</option>
+            </select>
+            <span class="muted">Size shows how often a tag appears in the selected school.</span>
+          </div>
+          <div id="cloud" class="cloud"></div>
+          <div id="cloud-empty" class="empty" style="display:none">No tags yet. Add some practices to populate the cloud.</div>
+        </div>
+      </section>
+
+      <!-- RIGHT: BROWSE / FILTER / EVALUATE -->
+      <section class="panel" aria-labelledby="browse-hd">
+        <div class="hd" id="browse-hd">Browse practices</div>
+        <div class="bd">
+          <div class="toolbar">
+            <input id="q" type="text" placeholder="Search title or description…" />
+            <select id="filter-school" title="Filter by School/College">
+              <option value="">All Schools / Colleges</option>
+              <option>College of Life Sciences</option>
+              <option>College of Science & Engineering</option>
+              <option>College of Social Sciences, Arts & Humanities</option>
+              <option>Doctoral College / PGR</option>
+              <option>Professional Services</option>
+            </select>
+            <select id="filter-tag" title="Filter by Tag"><option value="">All tags</option></select>
+          </div>
+
+          <div id="cards" class="cards"></div>
+          <div id="empty" class="empty" style="display:none">No practices match the current filters.</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    /* ------------ Data layer (localStorage now; replace with backend later) ------------- */
+    const KEY = 'bp.items.v2';
+
+    function loadAll(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; } }
+    function saveAll(items){ localStorage.setItem(KEY, JSON.stringify(items)); }
+
+    /* ------------ DOM refs ------------- */
+    const $title = document.getElementById('bp-title');
+    const $tags  = document.getElementById('bp-tags');
+    const $school= document.getElementById('bp-school');
+    const $body  = document.getElementById('bp-body');
+    const $save  = document.getElementById('bp-save');
+    const $clear = document.getElementById('bp-clear');
+
+    const $q     = document.getElementById('q');
+    const $filterSchool = document.getElementById('filter-school');
+    const $filterTag    = document.getElementById('filter-tag');
+    const $cards = document.getElementById('cards');
+    const $empty = document.getElementById('empty');
+
+    const $cloud = document.getElementById('cloud');
+    const $cloudEmpty = document.getElementById('cloud-empty');
+    const $cloudSchool = document.getElementById('cloud-school');
+
+    function escapeHTML(s){ return (s||'').replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+
+    function uniqueTags(items){
+      const set = new Set();
+      items.forEach(i => (i.tags||[]).forEach(t => set.add(t)));
+      return Array.from(set).sort((a,b)=>a.localeCompare(b));
+    }
+
+    function updateTagFilter(){
+      const items = loadAll();
+      const options = uniqueTags(items).map(t=>`<option>${escapeHTML(t)}</option>`).join('');
+      $filterTag.innerHTML = `<option value="">All tags</option>${options}`;
+    }
+
+    /* ------------ Add / seed ------------- */
+    function addItem({title,tags,school,body}){
+      const items = loadAll();
+      items.unshift({
+        id: Date.now(),
+        title: title.trim(),
+        body: body.trim(),
+        school: school || '',
+        tags: (tags||[]).map(t => t.trim()).filter(Boolean),
+        adopted: 0,
+        votes: { r:0, a:0, g:0 } // traffic light votes
+      });
+      saveAll(items);
+    }
+
+    (function seedIfEmpty(){
+      const items = loadAll();
+      if(items.length === 0){
+        addItem({
+          title: 'Mentoring circles for new PGRs',
+          tags: ['mentoring','onboarding','community'],
+          school: 'Doctoral College / PGR',
+          body: 'Monthly peer circles with rotating facilitator; share challenges, signpost support.'
+        });
+        addItem({
+          title: 'Transparent workload board',
+          tags: ['transparency','workload'],
+          school: 'College of Social Sciences, Arts & Humanities',
+          body: 'Team-visible board mapping roles and time allocations; updated monthly.'
+        });
+      }
+    })();
+
+    /* ------------ Render list ------------- */
+    function renderList(){
+      const q = ($q.value||'').toLowerCase().trim();
+      const fs = $filterSchool.value;
+      const ft = $filterTag.value;
+
+      const items = loadAll().filter(i=>{
+        const matchesQ = !q || i.title.toLowerCase().includes(q) || i.body.toLowerCase().includes(q);
+        const matchesS = !fs || i.school === fs;
+        const matchesT = !ft || (i.tags||[]).includes(ft);
+        return matchesQ && matchesS && matchesT;
+      });
+
+      if(items.length === 0){
+        $cards.innerHTML = '';
+        $empty.style.display = 'block';
+        return;
+      }
+      $empty.style.display = 'none';
+
+      $cards.innerHTML = items.map(i => {
+        const totalVotes = i.votes.r + i.votes.a + i.votes.g;
+        const ragTip = `R:${i.votes.r}  A:${i.votes.a}  G:${i.votes.g}`;
+        return `
+          <article class="card" data-id="${i.id}">
+            <h3 style="margin:0 0 6px 0">${escapeHTML(i.title)}
+              ${i.school ? `<span class="badge">${escapeHTML(i.school)}</span>` : ''}</h3>
+            <p class="muted" style="margin:.15rem 0 .35rem">${escapeHTML(i.body)}</p>
+            <div>${(i.tags||[]).map(t=>`<span class="pill">${escapeHTML(t)}</span>`).join('')}</div>
+
+            <div class="actions">
+              <button class="btn adopt" data-action="adopt">Adopt / considering (${i.adopted})</button>
+
+              <div class="meter" title="${ragTip}">
+                <span class="muted" style="margin-right:4px">Rate:</span>
+                <button class="vote" data-action="vote" data-v="r" title="Red – not successful">Red</button>
+                <div class="dot r" style="opacity:${i.votes.r?1:.35}"></div>
+                <button class="vote" data-action="vote" data-v="a" title="Amber – mixed">Amber</button>
+                <div class="dot a" style="opacity:${i.votes.a?1:.35}"></div>
+                <button class="vote" data-action="vote" data-v="g" title="Green – successful">Green</button>
+                <div class="dot g" style="opacity:${i.votes.g?1:.35}"></div>
+                ${totalVotes? `<span class="muted" style="margin-left:6px">(${totalVotes})</span>`:''}
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    /* ------------ Word-cloud (by School) ------------- */
+    function buildTagFreq(items, school){
+      const freq = new Map();
+      items.forEach(i=>{
+        if(school && i.school !== school) return;
+        (i.tags||[]).forEach(t => freq.set(t, (freq.get(t)||0)+1));
+      });
+      return Array.from(freq.entries()).sort((a,b)=>b[1]-a[1]);
+    }
+
+    function renderCloud(){
+      const school = $cloudSchool.value;
+      const items = loadAll();
+      const pairs = buildTagFreq(items, school);
+
+      if(pairs.length === 0){
+        $cloud.innerHTML = '';
+        $cloudEmpty.style.display = 'block';
+        return;
+      }
+      $cloudEmpty.style.display = 'none';
+
+      const counts = pairs.map(p=>p[1]);
+      const min = Math.min(...counts), max = Math.max(...counts);
+
+      function sizeFor(n){
+        if(min===max) return 16;
+        const t = (n - min)/(max - min); // 0..1
+        return 13 + Math.round(t * 22);  // 13px..35px
+      }
+
+      $cloud.innerHTML = pairs.map(([tag,count])=>{
+        const fs = sizeFor(count);
+        return `<span class="bubble" data-tag="${escapeHTML(tag)}" style="font-size:${fs}px" title="${tag}: ${count}">${escapeHTML(tag)}</span>`;
+      }).join('');
+
+      // Clicking a bubble filters the list on that tag
+      $cloud.querySelectorAll('.bubble').forEach(el=>{
+        el.addEventListener('click', () => {
+          $filterTag.value = el.dataset.tag;
+          renderList();
+          window.scrollTo({top: document.getElementById('browse-hd').getBoundingClientRect().top + window.scrollY - 90, behavior:'smooth'});
+        });
+      });
+    }
+
+    /* ------------ Interactions ------------- */
+    document.addEventListener('click', (ev)=>{
+      const card = ev.target.closest('.card');
+      if(!card) return;
+      const id = Number(card.dataset.id);
+      const items = loadAll();
+      const item = items.find(i=>i.id===id);
+      if(!item) return;
+
+      const action = ev.target.dataset.action;
+      if(action === 'adopt'){
+        item.adopted = (item.adopted||0) + 1;
+        saveAll(items); renderList();
+      }
+      if(action === 'vote'){
+        const v = ev.target.dataset.v; // r|a|g
+        item.votes[v] = (item.votes[v]||0) + 1;
+        saveAll(items); renderList();
+      }
+    });
+
+    document.getElementById('bp-save').addEventListener('click', ()=>{
+      const title = $title.value.trim();
+      const body  = $body.value.trim();
+      const school= $school.value;
+      const tags  = ($tags.value||'').split(',').map(t=>t.trim()).filter(Boolean);
+
+      if(!title || !body || !school){
+        alert('Please add a title, description and select School/College.'); return;
+      }
+      addItem({title,tags,school,body});
+      $title.value=''; $tags.value=''; $body.value=''; $school.value='';
+      updateTagFilter(); renderList(); renderCloud();
+    });
+
+    $clear.addEventListener('click', ()=>{ $title.value=''; $tags.value=''; $body.value=''; $school.value=''; });
+    $q.addEventListener('input', renderList);
+    $filterSchool.addEventListener('change', renderList);
+    $filterTag.addEventListener('change', renderList);
+    $cloudSchool.addEventListener('change', renderCloud);
+
+    // Initial paint
+    updateTagFilter();
+    renderList();
+    renderCloud();
+  </script>
+</body>
+</html>
