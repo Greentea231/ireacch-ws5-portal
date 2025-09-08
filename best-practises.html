@@ -10,9 +10,8 @@
   <link rel="stylesheet" href="assets/css/header.css" />
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Page-scoped tuning (kept minimal and neutral) -->
+  <!-- Page-scoped tuning -->
   <style>
-    /* Container & spacing aligned to site scale */
     .bp-container{max-width:1200px;margin:32px auto;padding:0 24px}
     @media (max-width:640px){.bp-container{padding:0 16px}}
 
@@ -22,25 +21,21 @@
     .bp-grid{display:grid;grid-template-columns:380px 1fr;gap:24px}
     @media (max-width:1000px){.bp-grid{grid-template-columns:1fr}}
 
-    .bp-panel{
-      background:#fff;border:1px solid #e6ecf1;border-radius:16px;
-      box-shadow:0 10px 24px rgba(28,39,51,.04)
-    }
+    .bp-panel{background:#fff;border:1px solid #e6ecf1;border-radius:16px;
+      box-shadow:0 10px 24px rgba(28,39,51,.04)}
     .bp-pad{padding:20px}
 
     .bp-panel h3{margin:0 0 10px;font-size:1.1rem}
     .bp-panel label{display:block;font-weight:600;margin:14px 0 6px}
     .bp-input,.bp-select,.bp-textarea{
       width:100%;padding:12px 14px;border:1px solid #e6ecf1;border-radius:10px;
-      font:inherit;background:#fff
-    }
+      font:inherit;background:#fff}
     .bp-textarea{min-height:120px;resize:vertical}
 
     .bp-row{display:flex;gap:10px;align-items:center}
     .bp-btn{
       appearance:none;border:0;border-radius:999px;padding:10px 16px;font-weight:700;cursor:pointer;
-      background:linear-gradient(90deg,#4a1ea8,#0aa0ff);color:#fff
-    }
+      background:linear-gradient(90deg,#4a1ea8,#0aa0ff);color:#fff}
     .bp-btn.ghost{background:transparent;border:1px solid #e6ecf1;color:#1c2733}
 
     .bp-toolbar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
@@ -50,19 +45,22 @@
     .bp-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
     @media (max-width:1100px){.bp-cards{grid-template-columns:1fr}}
 
-    .bp-card{border:1px solid #e6ecf1;border-radius:16px;background:#fff;padding:18px;display:flex;flex-direction:column;gap:10px}
+    .bp-card{border:1px solid #e6ecf1;border-radius:16px;background:#fff;padding:18px;
+      display:flex;flex-direction:column;gap:10px}
     .bp-card h4{margin:0;font-size:1.05rem}
-    .bp-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:#eef2f7;color:#556070;font-weight:600;font-size:.86rem}
+    .bp-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;
+      background:#eef2f7;color:#556070;font-weight:600;font-size:.86rem}
     .bp-school{background:#eaf5ff;color:#0c5ea8}
     .bp-tags{display:flex;gap:8px;flex-wrap:wrap}
-    .bp-chip{background:#eef2f7;color:#556070;padding:4px 10px;border-radius:999px;font-weight:600;font-size:.82rem}
+    .bp-chip{background:#eef2f7;color:#556070;padding:4px 10px;border-radius:999px;
+      font-weight:600;font-size:.82rem}
     .bp-sep{height:1px;background:#e6ecf1;border-radius:1px;margin:2px 0}
 
     .bp-cta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .bp-vote{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
     .bp-vote button{
-      border:1px solid #e6ecf1;background:#fff;color:#1c2733;border-radius:999px;padding:8px 10px;font-weight:700;cursor:pointer
-    }
+      border:1px solid #e6ecf1;background:#fff;color:#1c2733;border-radius:999px;
+      padding:8px 10px;font-weight:700;cursor:pointer}
     .bp-vote button.adopt{border-color:#2ea44f80}
     .bp-vote button.consider{border-color:#e3a00890}
     .bp-vote button.notfor{border-color:#cf3d3d90}
@@ -77,14 +75,36 @@
 </head>
 <body>
 
-  <!-- 🔹 PASTE YOUR EXISTING SITE HEADER/NAV HERE
-       Copy the exact <header>…</header> block from index.html so
-       the logo + nav look identical across pages. -->
+  <!-- Header (copied from index.html for consistency) -->
+  <header class="site-header">
+    <div class="container flex-between">
+      <a href="index.html" class="logo">
+        <img src="assets/img/ireacch-logo.png" alt="I-REACCH">
+      </a>
+      <nav class="site-nav">
+        <a href="index.html">Home</a>
+        <a href="micro-surveys.html">Surveys</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="meet-the-team.html">Meet the team</a>
+        <a href="#">Events</a>
+        <a href="#">Disrupting the Default</a>
+        <a href="#">Funding opportunities</a>
+        <a href="#">Blog</a>
+        <a href="best-practices.html">Best practices</a>
+      </nav>
+    </div>
+  </header>
 
+  <!-- Hero Banner -->
+  <section class="hero">
+    <div class="container">
+      <h1>Best Practices (Open Space)</h1>
+      <p>Share practical ideas and see what peers are adopting across Schools and Colleges.</p>
+    </div>
+  </section>
+
+  <!-- Page Content -->
   <main class="bp-container">
-    <h1 class="bp-title">Best Practices (Open Space)</h1>
-    <p class="bp-sub">Share practical ideas and see what peers are adopting across Schools and Colleges.</p>
-
     <section class="bp-grid">
       <!-- Submit -->
       <aside class="bp-panel">
@@ -114,7 +134,9 @@
             <button class="bp-btn" id="bp-add">Add practice</button>
             <button class="bp-btn ghost" id="bp-clear">Clear</button>
           </div>
-          <p class="bp-hint" style="margin-top:10px">Please avoid personal data. Submissions are lightly moderated before publishing.</p>
+          <p class="bp-hint" style="margin-top:10px">
+            Please avoid personal data. Submissions are lightly moderated before publishing.
+          </p>
         </div>
       </aside>
 
@@ -139,14 +161,16 @@
           </div>
 
           <div id="cards" class="bp-cards"></div>
-          <div id="empty" class="bp-empty" style="display:none">No practices yet — be the first to share.</div>
+          <div id="empty" class="bp-empty" style="display:none">
+            No practices yet — be the first to share.
+          </div>
         </div>
       </section>
     </section>
   </main>
 
+  <!-- Script -->
   <script>
-    /* Data (in-page for now) */
     const seedData = [
       { id:"p1", title:"Transparent workload board",
         school:"College of Social Sciences, Arts & Humanities",
@@ -161,7 +185,6 @@
     ];
     const state = { data:[...seedData], query:"", school:"" };
 
-    /* Elements */
     const cardsEl = document.getElementById("cards");
     const emptyEl = document.getElementById("empty");
     const qEl = document.getElementById("q");
@@ -174,7 +197,6 @@
     const addBtn = document.getElementById("bp-add");
     const clearBtn = document.getElementById("bp-clear");
 
-    /* Helpers */
     const uid = () => "p" + Math.random().toString(36).slice(2,9);
     const LSkey = id => "bp-vote-" + id;
     const saveVote = (id,choice) => localStorage.setItem(LSkey(id), choice);
@@ -189,7 +211,6 @@
       });
     }
 
-    /* Render */
     function render(){
       const items = filtered();
       cardsEl.innerHTML = "";
@@ -236,7 +257,7 @@
     function makeVoteBtn(label, style, active, onClick){
       const b = document.createElement("button");
       b.textContent = label;
-      b.className = style;          // adopt | consider | notfor
+      b.className = style;
       if(active) b.classList.add("active", style);
       b.onclick = onClick;
       return b;
@@ -252,7 +273,6 @@
 
     function escapeHtml(s){return (s||"").replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 
-    /* Events */
     qEl.addEventListener("input", e=>{state.query=e.target.value;render();});
     filterSchoolEl.addEventListener("change", e=>{state.school=e.target.value;render();});
     addBtn.addEventListener("click", ()=>{
@@ -265,7 +285,6 @@
     });
     clearBtn.addEventListener("click", ()=>{ titleEl.value=schoolEl.value=descEl.value=tagsEl.value=""; titleEl.focus(); });
 
-    /* Start */
     render();
   </script>
 </body>
