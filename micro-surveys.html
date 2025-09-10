@@ -32,6 +32,22 @@
     .panel .hd{padding:14px 16px;border-bottom:1px solid var(--border)}
     .panel .bd{padding:14px 16px}
 
+    /* left header */
+    .side-title{margin:0 0 10px;font-size:17px;font-weight:800;color:var(--text)}
+    .filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:2px 0 6px}
+    .filters a{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-height:28px; padding:4px 10px; border-radius:8px;
+      font-weight:700; font-size:14px; line-height:1; text-decoration:none;
+      color:var(--muted); background:transparent; border:1px solid transparent;
+      transition:background .15s ease,border-color .15s ease,color .15s ease;
+    }
+    .filters a:hover{background:#f7faff}
+    .filters a.active{
+      color:var(--accent); background:var(--bg-soft); border-color:var(--border);
+    }
+    .filters .sep{color:#c6cbd6;margin:0 2px}
+
     .list{display:flex;flex-direction:column;gap:12px}
     .item{display:flex;align-items:center;justify-content:space-between;gap:10px;
       padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:#fff;
@@ -40,35 +56,18 @@
     .item.locked{opacity:.55}
     .item.active{box-shadow:0 0 0 3px var(--accent);border-color:transparent;background:#fff}
 
-    /* a bit bigger for clarity */
+    /* slightly bigger for clarity */
     .title{font-weight:700;color:var(--text);font-size:16px;line-height:1.28}
     .meta{font-size:13px;color:var(--muted);margin-top:4px}
     .left{display:flex;flex-direction:column}
     .right{display:flex;align-items:center;gap:8px}
 
     /* status pills */
-    .pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;
+    .pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;
       background:var(--pill-bg);color:var(--pill-tx);border:1px solid var(--border)}
     .pill.done{background:var(--done-bg);color:var(--done-tx)}
     /* warm red for in-progress */
     .pill.progress{background:#ff6b6b;color:#fff;border-color:#ff6b6b}
-
-    /* filters (no width jump) */
-    .filters{display:flex;gap:10px;align-items:center}
-    .filters a{
-      display:inline-block;
-      padding:4px 8px;
-      border-radius:6px;
-      font-weight:700;               /* same weight for all */
-      color:var(--muted);
-      text-decoration:none;
-      line-height:1;
-    }
-    .filters a.active{
-      color:var(--accent);
-      background:var(--bg-soft);     /* visual cue without changing width */
-    }
-    .filters .sep{color:#c6cbd6;margin:0 4px}
 
     .head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
     .h2{margin:0;color:var(--text);font-size:18px;font-weight:800}
@@ -119,14 +118,13 @@
     <!-- LEFT LIST -->
     <aside class="panel">
       <div class="hd">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <strong>Survey List</strong>
-          <div class="filters" id="filters">
-            <a href="#" data-filter="all" class="active">All</a><span class="sep">|</span>
-            <a href="#" data-filter="unfinished">Unfinished</a><span class="sep">|</span>
-            <a href="#" data-filter="completed">Completed</a>
-          </div>
-        </div>
+        <!-- stacked heading + filters -->
+        <h3 class="side-title">Survey List</h3>
+        <nav class="filters" id="filters" aria-label="Filter surveys">
+          <a href="#" data-filter="all" class="active">All</a><span class="sep">|</span>
+          <a href="#" data-filter="unfinished">Unfinished</a><span class="sep">|</span>
+          <a href="#" data-filter="completed">Completed</a>
+        </nav>
       </div>
       <div class="bd"><div id="list" class="list"></div></div>
     </aside>
