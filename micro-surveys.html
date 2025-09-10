@@ -22,8 +22,6 @@
       --pill-tx:  #2f5d98;
       --done-bg:  #e7f8ec;
       --done-tx:  #1f7a41;
-      --warn-bg:  #fff5e5;
-      --warn-tx:  #9a5b00;
     }
 
     .runner{display:grid;grid-template-columns:320px 1fr;gap:20px}
@@ -42,34 +40,35 @@
     .item.locked{opacity:.55}
     .item.active{box-shadow:0 0 0 3px var(--accent);border-color:transparent;background:#fff}
 
-    .title{font-weight:700;color:var(--text);font-size:15.5px;line-height:1.28}
+    /* a bit bigger for clarity */
+    .title{font-weight:700;color:var(--text);font-size:16px;line-height:1.28}
     .meta{font-size:13px;color:var(--muted);margin-top:4px}
     .left{display:flex;flex-direction:column}
     .right{display:flex;align-items:center;gap:8px}
 
+    /* status pills */
     .pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;
       background:var(--pill-bg);color:var(--pill-tx);border:1px solid var(--border)}
     .pill.done{background:var(--done-bg);color:var(--done-tx)}
-    .pill.progress{background:var(--warn-bg);color:var(--warn-tx)}
+    /* warm red for in-progress */
+    .pill.progress{background:#ff6b6b;color:#fff;border-color:#ff6b6b}
 
-  
+    /* filters (no width jump) */
     .filters{display:flex;gap:10px;align-items:center}
     .filters a{
       display:inline-block;
-      padding:4px 6px;
+      padding:4px 8px;
       border-radius:6px;
-      font-weight:700;        /* make all items the same weight */
+      font-weight:700;               /* same weight for all */
       color:var(--muted);
       text-decoration:none;
       line-height:1;
     }
     .filters a.active{
       color:var(--accent);
-      background:var(--bg-soft);     /* visual cue instead of weight change */
-      /* no font-weight change → no width change → no jump */
+      background:var(--bg-soft);     /* visual cue without changing width */
     }
     .filters .sep{color:#c6cbd6;margin:0 4px}
-
 
     .head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
     .h2{margin:0;color:var(--text);font-size:18px;font-weight:800}
@@ -152,6 +151,25 @@
       </div>
     </section>
   </div>
+
+  <!-- Admin helper (open with ?admin=1) -->
+  <section id="admin" class="admin" style="display:none">
+    <h2 style="margin:0 0 8px">Admin • add a survey (JSON helper)</h2>
+    <div class="grid">
+      <input id="aTitle" placeholder="Title e.g., I-REACCH Micro Survey (Q1) Feel Valued"/>
+      <input id="aMinutes" placeholder="Minutes (e.g., 1)"/>
+    </div>
+    <div class="grid">
+      <input id="aAudience" placeholder="Audience (e.g., Staff/PGR)"/>
+      <input id="aSchool" placeholder="School/College (optional)"/>
+    </div>
+    <input id="aUrl" placeholder="Microsoft Forms embed URL"/>
+    <div class="controls">
+      <button id="aAdd" class="btn">Add to config (in memory)</button>
+      <button id="aExport" class="btn" style="background:var(--bg-soft);color:var(--text)">Export JSON</button>
+    </div>
+    <code id="aOut" class="json-out" style="display:none"></code>
+  </section>
 </main>
 
 <script>
@@ -160,10 +178,13 @@ async function loadSurveys(){
   try{const r=await fetch('surveys.json?cb='+Date.now());SURVEYS=await r.json();}
   catch{SURVEYS=[];}
 }
+
 const statusKey=id=>`survey-status:${id}`;
 const getStatus=id=>localStorage.getItem(statusKey(id))||"not";
 function setStatus(id,s){localStorage.setItem(statusKey(id),s);renderList(current?.id);updateBtn();}
+
 const nextUnfinishedIndex=()=>SURVEYS.findIndex(s=>getStatus(s.id)!=="done");
+
 const $list=document.getElementById('list');
 const $frame=document.getElementById('formFrame');
 const $title=document.getElementById('currTitle');
@@ -171,59 +192,112 @@ const $date=document.getElementById('currDate');
 const $badge=document.getElementById('currBadge');
 const $btn=document.getElementById('btnComplete');
 const $filters=document.getElementById('filters');
+
 let current=null,filter="all";
+
 [...$filters.querySelectorAll('a')].forEach(a=>{
   a.onclick=e=>{
     e.preventDefault();
     [...$filters.querySelectorAll('a')].forEach(x=>x.classList.remove('active'));
-    a.classList.add('active');filter=a.dataset.filter;renderList(current?.id);
+    a.classList.add('active');
+    filter=a.dataset.filter;
+    renderList(current?.id);
   };
 });
+
 function renderList(activeId){
-  $list.innerHTML='';const unlock=nextUnfinishedIndex();
+  $list.innerHTML='';
+  const unlock=nextUnfinishedIndex();
   SURVEYS.forEach((s,i)=>{
     const st=getStatus(s.id);
     if(filter==='unfinished'&&st==='done')return;
     if(filter==='completed'&&st!=='done')return;
+
     const canOpen=(i===unlock)||st!=='not';
+
     const item=document.createElement('div');
     item.className='item'+(s.id===activeId?' active':'')+(canOpen?'':' locked');
     item.dataset.id=s.id;
+
     const pillClass=st==='done'?'pill done':(st==='progress'?'pill progress':'pill');
     const pillText=st==='done'?'Completed':(st==='progress'?'In progress':'Unfinished');
+
     item.innerHTML=`
       <div class="left">
         <div class="title">${s.title}</div>
         <div class="meta">${s.date||''}</div>
       </div>
       <div class="right"><span class="${pillClass}">${pillText}</span></div>`;
+
     item.onclick=()=>{if(!canOpen)return shake(item);loadSurvey(s.id);};
     $list.appendChild(item);
   });
 }
-function shake(el){el.style.transition='transform .08s';el.style.transform='translateX(-4px)';
+
+function shake(el){
+  el.style.transition='transform .08s';
+  el.style.transform='translateX(-4px)';
   setTimeout(()=>el.style.transform='translateX(4px)',80);
-  setTimeout(()=>{el.style.transform='none';el.style.transition=''},160);}
+  setTimeout(()=>{el.style.transform='none';el.style.transition=''},160);
+}
+
 function loadSurvey(id){
   const s=SURVEYS.find(x=>x.id===id);if(!s)return;current=s;
-  if(getStatus(id)!=='done')setStatus(id,'progress');
-  $title.textContent=s.title;$date.textContent=s.date||'';
+  if(getStatus(id)!=='done') setStatus(id,'progress');
+  $title.textContent=s.title;
+  $date.textContent=s.date||'';
   const st=getStatus(id);
   $badge.textContent=st==='done'?'Completed':(st==='progress'?'In progress':'Unfinished');
   $badge.className=st==='done'?'pill done':(st==='progress'?'pill progress':'pill');
-  $frame.src=s.url;renderList(id);updateBtn();
+  $frame.src=s.url;
+  renderList(id);
+  updateBtn();
 }
-function updateBtn(){if(!current){$btn.disabled=true;return}
+
+function updateBtn(){
+  if(!current){$btn.disabled=true;return}
   const done=getStatus(current.id)==='done';
   $btn.textContent=done?'Completed':'Mark as completed';
-  $btn.disabled=done;}
+  $btn.disabled=done;
+}
+
 $btn.onclick=()=>{
   if(!current)return;
-  setStatus(current.id,'done');loadSurvey(current.id);
+  setStatus(current.id,'done');
+  loadSurvey(current.id);
   const idx=nextUnfinishedIndex();
-  if(idx!==-1)loadSurvey(SURVEYS[idx].id);
+  if(idx!==-1) loadSurvey(SURVEYS[idx].id);
   else alert("All surveys completed — thank you!");
 };
+
+/* Admin helper (open with ?admin=1) */
+const urlParams=new URLSearchParams(location.search);
+if(urlParams.get("admin")==="1"){
+  const admin=document.getElementById('admin');
+  admin.style.display='block';
+  document.getElementById('aAdd').onclick=()=>{
+    const title=document.getElementById('aTitle').value.trim();
+    const minutes=parseInt(document.getElementById('aMinutes').value.trim()||"1",10);
+    const audience=document.getElementById('aAudience').value.trim();
+    const school=document.getElementById('aSchool').value.trim();
+    const url=document.getElementById('aUrl').value.trim();
+    if(!title||!url){alert("Title and URL are required");return;}
+    SURVEYS.push({id:slugify(title),title,minutes,audience,school:school||"All",url});
+    renderList(current?.id);
+    ['aTitle','aMinutes','aAudience','aSchool','aUrl'].forEach(id=>document.getElementById(id).value="");
+  };
+  document.getElementById('aExport').onclick=()=>{
+    const out=document.getElementById('aOut');
+    out.textContent=JSON.stringify(SURVEYS,null,2);
+    out.style.display="block";
+    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+  };
+}
+
+function slugify(s){
+  return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,60);
+}
+
 (async()=>{await loadSurveys();renderList();if(SURVEYS[0])loadSurvey(SURVEYS[0].id)})();
 </script>
 
