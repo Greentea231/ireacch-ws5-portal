@@ -11,26 +11,49 @@
   <link rel="stylesheet" href="assets/css/style.css">
 
   <style>
+    /* Header consistency (optional hardening) */
+    .site-header .logo img{height:44px; width:auto; display:block;}
+    .site-header .nav a{font-size:16px; padding:8px 12px; white-space:nowrap;}
+
     .runner { display:grid; grid-template-columns: 320px 1fr; gap:20px; }
     @media (max-width: 980px){ .runner { grid-template-columns: 1fr; } }
-    .panel { background:#fff; border-radius:12px; box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+    .panel { background:#fff; border-radius:12px; box-shadow: 0 4px 12px rgba(0,0,0,.08); border:1px solid #e9eef6; }
     .panel .hd { padding:16px 18px; border-bottom:1px solid #e9eef6; }
     .panel .bd { padding:16px 18px; }
     .list { display:flex; flex-direction:column; gap:10px; }
+
     .item { display:flex; gap:10px; align-items:center; justify-content:space-between;
-            padding:12px 14px; border:1px solid #e9eef6; border-radius:10px; cursor:pointer; }
+            padding:12px 14px; border:1px solid #e9eef6; border-radius:10px; background:#fff; }
     .item:hover { background:#f7fbff; }
+    .item.locked { opacity:.5; }
     .item.active { outline:2px solid #9b51e0; background:#f9f3ff; }
     .title { font-weight:600; color:#1b2a41; }
     .sub { font-size:12px; color:#66788a; }
     .badges { display:flex; gap:6px; align-items:center; }
     .badge { font-size:11px; padding:3px 8px; border-radius:999px; background:#eef4ff; color:#2f5d98; }
     .badge.done { background:#e7f8ec; color:#207a3c; }
+    .badge.progress { background:#fff5e5; color:#9a5b00; }
+
     .controls { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
-    .btn { appearance:none; border:0; padding:10px 14px; border-radius:999px; font-weight:700; color:#fff;
+    .btn { appearance:none; border:0; padding:10px 14px; border-radius:999px; font-weight:800; color:#fff;
            background:linear-gradient(135deg,#5b2ca1,#00b0f0); cursor:pointer; }
     .btn.secondary { background:#eef4ff; color:#2f5d98; }
+    .btn[disabled]{opacity:.4;cursor:not-allowed}
+
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+    .tab{border:1px solid #e6ecf6;border-radius:999px;padding:7px 12px;background:#fff;cursor:pointer;font-weight:700}
+    .tab.active{background:linear-gradient(90deg,#4a1ea8,#0aa0ff);color:#fff;border-color:transparent}
+
     iframe { width:100%; height:600px; border:0; border-radius:10px; background:#fff; }
+
+    .helper{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .helper .muted{color:#66788a;font-size:.95rem}
+
+    /* Admin helper */
+    .admin{margin-top:26px;border-top:1px dashed #e6ecf1;padding-top:16px}
+    .admin input{width:100%;padding:10px;border:1px solid #e6ecf1;border-radius:10px;margin:6px 0}
+    .admin .grid{display:grid;grid-template-columns:2fr 1fr;gap:10px}
+    code.json-out{display:block;white-space:pre-wrap;background:#0f172a;color:#e2e8f0;padding:10px;border-radius:10px;margin-top:10px;font-size:.85rem}
   </style>
 </head>
 <body>
@@ -46,6 +69,7 @@
       <a href="index.html">Home</a>
       <a href="micro-surveys.html" class="active">Surveys</a>
       <a href="dashboard.html">Dashboard</a>
+      <a href="best-practices.html">Best practices</a>
       <!-- keep or remove any of these external links as needed -->
       <a href="https://ireacch.le.ac.uk/meet-the-team/" target="_blank" rel="noopener">Meet the team</a>
       <a href="https://ireacch.le.ac.uk/events/" target="_blank" rel="noopener">Events</a>
@@ -56,12 +80,11 @@
   </div>
 </header>
 
-
   <!-- Hero -->
   <section class="hero">
     <div class="container content">
       <h1>Micro surveys</h1>
-      <p>Each survey has only one question. Quick to answer — your input matters!</p>
+      <p>Each survey has only one question. Please complete them in order — the next one unlocks automatically.</p>
     </div>
   </section>
 
@@ -70,7 +93,18 @@
     <div class="runner">
       <!-- Left: list -->
       <aside class="panel">
-        <div class="hd"><strong>All questions</strong></div>
+        <div class="hd">
+          <div class="helper">
+            <strong>All questions</strong>
+            <button id="nextBtnTop" class="btn secondary">Next unfinished</button>
+          </div>
+          <div class="tabs" id="tabs">
+            <button class="tab active" data-filter="all">All</button>
+            <button class="tab" data-filter="not">Not started</button>
+            <button class="tab" data-filter="progress">In progress</button>
+            <button class="tab" data-filter="done">Done</button>
+          </div>
+        </div>
         <div class="bd">
           <div id="list" class="list"></div>
         </div>
@@ -96,95 +130,216 @@
         </div>
       </section>
     </div>
+
+    <!-- Admin helper (open with ?admin=1) -->
+    <section id="admin" class="admin" style="display:none">
+      <h2 style="margin:0 0 8px">Admin • add a survey (JSON helper)</h2>
+      <div class="grid">
+        <input id="aTitle" placeholder="Title e.g., I-REACCH Micro Survey (Q1) Feel Valued"/>
+        <input id="aMinutes" placeholder="Minutes (e.g., 1)"/>
+      </div>
+      <div class="grid">
+        <input id="aAudience" placeholder="Audience (e.g., Staff/PGR)"/>
+        <input id="aSchool" placeholder="School/College (optional)"/>
+      </div>
+      <input id="aUrl" placeholder="Microsoft Forms embed URL"/>
+      <div class="controls">
+        <button id="aAdd" class="btn">Add to config (in memory)</button>
+        <button id="aExport" class="btn secondary">Export JSON to copy into GitHub</button>
+      </div>
+      <code id="aOut" class="json-out" style="display:none"></code>
+    </section>
   </main>
 
-  <script>
-  // Example surveys — replace urls later with your 14 surveys
-  const SURVEYS = [
-    {
-      id: "survey1",
-      title: "Research culture (Q1)",
-      minutes: 1,
-      audience: "Staff/PGR",
-      url: "https://forms.office.com/Pages/ResponsePage.aspx?id=as2-rtQxAUuVzoJ0r-hT2buX6ZV7MhVCmSvPlC6dFa1UQ09CV1JUOEhQVUZXWUtOWFZPOVY1OUdZQy4u&embed=true"
-    },
-    {
-      id: "survey2",
-      title: "Equity in recruitment (Q2)",
-      minutes: 1,
-      audience: "Researchers",
-      url: "https://forms.office.com/Pages/ResponsePage.aspx?id=as2-rtQxAUuVzoJ0r-hT2buX6ZV7MhVCmSvPlC6dFa1UQ09CV1JUOEhQVUZXWUtOWFZPOVY1OUdZQy4u&embed=true"
-    },
-    {
-      id: "survey3",
-      title: "Leadership in academia (Q3)",
-      minutes: 1,
-      audience: "All staff",
-      url: "https://forms.office.com/Pages/ResponsePage.aspx?id=as2-rtQxAUuVzoJ0r-hT2buX6ZV7MhVCmSvPlC6dFa1UQ09CV1JUOEhQVUZXWUtOWFZPOVY1OUdZQy4u&embed=true"
-    }
-  ];
+<script>
+/* ---------------------------
+   Load surveys.json (same origin)
+----------------------------*/
+let SURVEYS = [];
 
-  const key = id => `micro.${id}.done`;
-  const isDone = id => localStorage.getItem(key(id)) === 'true';
-  const setDone = id => localStorage.setItem(key(id),'true');
-
-  const $list = document.getElementById('list');
-  const $frame = document.getElementById('formFrame');
-  const $title = document.getElementById('currTitle');
-  const $meta  = document.getElementById('currMeta');
-  const $badge = document.getElementById('currBadge');
-  const $next  = document.getElementById('nextBtn');
-  const $mark  = document.getElementById('markDone');
-
-  let current = null;
-
-  function renderList(activeId){
-    $list.innerHTML = SURVEYS.map(s => {
-      const done = isDone(s.id);
-      const active = s.id === activeId ? 'active' : '';
-      const status = done ? '<span class="badge done">Completed</span>' : '<span class="badge">New</span>';
-      return `
-        <div class="item ${active}" data-id="${s.id}">
-          <div><div class="title">${s.title}</div><div class="sub">~${s.minutes} min • ${s.audience}</div></div>
-          <div class="badges">${status}</div>
-        </div>`;
-    }).join('');
-    [...$list.querySelectorAll('.item')].forEach(el => {
-      el.addEventListener('click', () => load(el.dataset.id));
-    });
+async function loadSurveys() {
+  try {
+    const res = await fetch('surveys.json?cb=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    SURVEYS = await res.json();
+  } catch (e) {
+    console.error('Failed to load surveys.json', e);
+    SURVEYS = []; // keep page usable
   }
+}
 
-  function load(id){
-    const s = SURVEYS.find(x => x.id === id);
-    if(!s) return;
-    current = s;
-    $title.textContent = s.title;
-    $meta.textContent = `~${s.minutes} min • ${s.audience}`;
-    const done = isDone(id);
-    $badge.textContent = done ? 'Completed' : 'New';
-    $badge.className = done ? 'badge done' : 'badge';
-    $frame.src = s.url;
-    renderList(id);
-  }
+/* ---------------------------
+   STATUS STORE (per device)
+   not | progress | done
+----------------------------*/
+const statusKey = id => `survey-status:${id}`;
+const getStatus = id => localStorage.getItem(statusKey(id)) || "not";
+function setStatus(id, s){
+  localStorage.setItem(statusKey(id), s);
+  renderList(current ? current.id : null);
+}
 
-  function nextUnfinished(){
-    const idx = current ? SURVEYS.findIndex(s => s.id === current.id) : -1;
-    for(let i = 1; i <= SURVEYS.length; i++){
-      const j = (idx + i) % SURVEYS.length;
-      if(!isDone(SURVEYS[j].id)) return load(SURVEYS[j].id);
-    }
-    alert('All micro surveys completed on this device — thank you!');
-  }
+/* Sequential lock: index of first not-done */
+function nextUnfinishedIndex(){
+  return SURVEYS.findIndex(s => getStatus(s.id) !== "done");
+}
 
-  $mark.addEventListener('click', () => {
-    if(!current) return;
-    setDone(current.id);
-    load(current.id);
+/* ---------------------------
+   UI refs
+----------------------------*/
+const $list  = document.getElementById('list');
+const $frame = document.getElementById('formFrame');
+const $title = document.getElementById('currTitle');
+const $meta  = document.getElementById('currMeta');
+const $badge = document.getElementById('currBadge');
+const $next  = document.getElementById('nextBtn');
+const $nextTop = document.getElementById('nextBtnTop');
+const $mark  = document.getElementById('markDone');
+const $tabs  = document.getElementById('tabs');
+
+let current = null;
+let filter = "all";
+
+/* Tabs */
+[...$tabs.querySelectorAll('.tab')].forEach(t=>{
+  t.addEventListener('click', ()=>{
+    [...$tabs.children].forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    filter = t.dataset.filter;
+    renderList(current ? current.id : null);
   });
-  $next.addEventListener('click', nextUnfinished);
+});
 
+/* Render list with sequential gating */
+function renderList(activeId){
+  $list.innerHTML = "";
+  const unlockIndex = nextUnfinishedIndex();
+
+  SURVEYS.forEach((s, i) => {
+    const st = getStatus(s.id); // not | progress | done
+
+    // filter
+    if(filter === "not" && st !== "not") return;
+    if(filter === "progress" && st !== "progress") return;
+    if(filter === "done" && st !== "done") return;
+
+    // gating: you can open if it's the first not-done, or if already progress/done
+    const canOpen = (i === unlockIndex) || st !== "not";
+
+    const item = document.createElement('div');
+    item.className = "item" + (s.id===activeId ? " active" : "") + (canOpen ? "" : " locked");
+    item.dataset.id = s.id;
+
+    const statusBadge =
+      st === "done" ? '<span class="badge done">Completed</span>' :
+      st === "progress" ? '<span class="badge progress">In progress</span>' :
+      '<span class="badge">New</span>';
+
+    item.innerHTML = `
+      <div>
+        <div class="title">${escapeHtml(s.title)}</div>
+        <div class="sub">~${s.minutes||1} min • ${escapeHtml(s.audience||"")}</div>
+      </div>
+      <div class="badges">
+        ${statusBadge}
+        ${i===unlockIndex && st!=="done" ? '<span class="sub" style="margin-left:6px">• next</span>' : ''}
+      </div>
+    `;
+
+    item.addEventListener('click', () => {
+      if(!canOpen){ shake(item); return; }
+      loadSurvey(s.id);
+    });
+
+    $list.appendChild(item);
+  });
+}
+
+/* Simple shake for locked items (UX cue) */
+function shake(el){
+  el.style.transition='transform .08s';
+  el.style.transform='translateX(-4px)';
+  setTimeout(()=>{ el.style.transform='translateX(4px)'; },80);
+  setTimeout(()=>{ el.style.transform='none'; el.style.transition=''; },160);
+}
+
+/* Load a survey into the frame */
+function loadSurvey(id){
+  const s = SURVEYS.find(x => x.id === id);
+  if(!s) return;
+  current = s;
+  setStatus(s.id, getStatus(s.id)==="done" ? "done" : "progress"); // if not done, mark progress
+
+  $title.textContent = s.title;
+  $meta.textContent  = `~${s.minutes||1} min • ${s.audience||""}`;
+  const st = getStatus(id);
+  $badge.textContent = st==="done" ? "Completed" : (st==="progress" ? "In progress" : "New");
+  $badge.className = "badge " + (st==="done" ? "done" : (st==="progress" ? "progress" : ""));
+
+  $frame.src = s.url;
+  renderList(id);
+}
+
+/* Next unfinished */
+function nextUnfinished(){
+  const idx = nextUnfinishedIndex();
+  if(idx === -1){ alert('All micro surveys completed on this device — thank you!'); return; }
+  loadSurvey(SURVEYS[idx].id);
+}
+
+/* Mark done (MVP) */
+document.getElementById('markDone').addEventListener('click', () => {
+  if(!current) return;
+  setStatus(current.id, "done");
+  loadSurvey(current.id);
+});
+
+/* Next buttons */
+$next.addEventListener('click', nextUnfinished);
+$nextTop.addEventListener('click', nextUnfinished);
+
+/* Admin helper (open with ?admin=1) */
+const urlParams = new URLSearchParams(location.search);
+if(urlParams.get("admin")==="1"){
+  const admin = document.getElementById('admin');
+  admin.style.display='block';
+
+  document.getElementById('aAdd').onclick = () => {
+    const title   = document.getElementById('aTitle').value.trim();
+    const minutes = parseInt(document.getElementById('aMinutes').value.trim()||"1",10);
+    const audience= document.getElementById('aAudience').value.trim();
+    const school  = document.getElementById('aSchool').value.trim();
+    const url     = document.getElementById('aUrl').value.trim();
+    if(!title || !url){ alert("Title and URL are required"); return; }
+    SURVEYS.push({ id: slugify(title), title, minutes, audience, school: school||"All", url });
+    renderList(current ? current.id : null);
+    document.getElementById('aTitle').value="";
+    document.getElementById('aMinutes').value="";
+    document.getElementById('aAudience').value="";
+    document.getElementById('aSchool').value="";
+    document.getElementById('aUrl').value="";
+  };
+
+  document.getElementById('aExport').onclick = () => {
+    const out = document.getElementById('aOut');
+    out.textContent = JSON.stringify(SURVEYS, null, 2);
+    out.style.display = "block";
+    window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'});
+  };
+}
+
+/* Helpers */
+function slugify(s){
+  return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'').slice(0,60);
+}
+function escapeHtml(s){return (s||"").replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+/* Boot */
+(async function init(){
+  await loadSurveys();
   renderList();
-  if(SURVEYS[0]) load(SURVEYS[0].id);
+  if(SURVEYS[0]) loadSurvey(SURVEYS[0].id);
+})();
 </script>
 
 </body>
