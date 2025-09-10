@@ -52,10 +52,24 @@
     .pill.done{background:var(--done-bg);color:var(--done-tx)}
     .pill.progress{background:var(--warn-bg);color:var(--warn-tx)}
 
-    .filters{font-size:14px}
-    .filters a{color:var(--muted);text-decoration:none;margin-right:10px}
-    .filters a.active{color:var(--accent);font-weight:800}
+  
+    .filters{display:flex;gap:10px;align-items:center}
+    .filters a{
+      display:inline-block;
+      padding:4px 6px;
+      border-radius:6px;
+      font-weight:700;        /* make all items the same weight */
+      color:var(--muted);
+      text-decoration:none;
+      line-height:1;
+    }
+    .filters a.active{
+      color:var(--accent);
+      background:var(--bg-soft);     /* visual cue instead of weight change */
+      /* no font-weight change → no width change → no jump */
+    }
     .filters .sep{color:#c6cbd6;margin:0 4px}
+
 
     .head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
     .h2{margin:0;color:var(--text);font-size:18px;font-weight:800}
