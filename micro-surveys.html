@@ -62,12 +62,10 @@
     .left{display:flex;flex-direction:column}
     .right{display:flex;align-items:center;gap:8px}
 
-    /* status pills */
+    /* status pills: only Unfinished / Completed */
     .pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;
       background:var(--pill-bg);color:var(--pill-tx);border:1px solid var(--border)}
     .pill.done{background:var(--done-bg);color:var(--done-tx)}
-    /* warm red for in-progress */
-    .pill.progress{background:#ff6b6b;color:#fff;border-color:#ff6b6b}
 
     .head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
     .h2{margin:0;color:var(--text);font-size:18px;font-weight:800}
@@ -118,7 +116,6 @@
     <!-- LEFT LIST -->
     <aside class="panel">
       <div class="hd">
-        <!-- stacked heading + filters -->
         <h3 class="side-title">Survey List</h3>
         <nav class="filters" id="filters" aria-label="Filter surveys">
           <a href="#" data-filter="all" class="active">All</a><span class="sep">|</span>
@@ -137,7 +134,7 @@
             <h2 class="h2" id="currTitle">Select a micro survey</h2>
             <div class="muted" id="currDate"></div>
           </div>
-          <div class="status"><span id="currBadge" class="pill">New</span></div>
+          <div class="status"><span id="currBadge" class="pill">Unfinished</span></div>
         </div>
       </div>
 
@@ -154,7 +151,7 @@
   <section id="admin" class="admin" style="display:none">
     <h2 style="margin:0 0 8px">Admin • add a survey (JSON helper)</h2>
     <div class="grid">
-      <input id="aTitle" placeholder="Title e.g., I-REACCH Micro Survey (Q1) Feel Valued"/>
+      <input id="aTitle" placeholder="Title e.g., Feel valued in your job at the moment"/>
       <input id="aMinutes" placeholder="Minutes (e.g., 1)"/>
     </div>
     <div class="grid">
@@ -177,8 +174,9 @@ async function loadSurveys(){
   catch{SURVEYS=[];}
 }
 
+// Only two states now: unfinished (not in localStorage or anything not "done") and completed ("done")
 const statusKey=id=>`survey-status:${id}`;
-const getStatus=id=>localStorage.getItem(statusKey(id))||"not";
+const getStatus=id=>localStorage.getItem(statusKey(id))==="done"?"done":"not";
 function setStatus(id,s){localStorage.setItem(statusKey(id),s);renderList(current?.id);updateBtn();}
 
 const nextUnfinishedIndex=()=>SURVEYS.findIndex(s=>getStatus(s.id)!=="done");
@@ -192,6 +190,13 @@ const $btn=document.getElementById('btnComplete');
 const $filters=document.getElementById('filters');
 
 let current=null,filter="all";
+
+/* Title formatter to enforce Q1/Q2 names and Qn: prefix thereafter */
+function renderTitle(i, raw){
+  if(i===0) return "Q1: Feel valued in your job at the moment";
+  if(i===1) return "Q2: Confidence in career planning";
+  return `Q${i+1}: ${raw}`;
+}
 
 [...$filters.querySelectorAll('a')].forEach(a=>{
   a.onclick=e=>{
@@ -207,27 +212,27 @@ function renderList(activeId){
   $list.innerHTML='';
   const unlock=nextUnfinishedIndex();
   SURVEYS.forEach((s,i)=>{
-    const st=getStatus(s.id);
+    const st=getStatus(s.id);                // "done" or "not"
     if(filter==='unfinished'&&st==='done')return;
     if(filter==='completed'&&st!=='done')return;
 
-    const canOpen=(i===unlock)||st!=='not';
+    const canOpen=(i===unlock)||(st==='done'); // sequential unlock
 
     const item=document.createElement('div');
     item.className='item'+(s.id===activeId?' active':'')+(canOpen?'':' locked');
     item.dataset.id=s.id;
 
-    const pillClass=st==='done'?'pill done':(st==='progress'?'pill progress':'pill');
-    const pillText=st==='done'?'Completed':(st==='progress'?'In progress':'Unfinished');
+    const pillClass=st==='done'?'pill done':'pill';
+    const pillText=st==='done'?'Completed':'Unfinished';
 
     item.innerHTML=`
       <div class="left">
-        <div class="title">${s.title}</div>
+        <div class="title">${renderTitle(i, s.title)}</div>
         <div class="meta">${s.date||''}</div>
       </div>
       <div class="right"><span class="${pillClass}">${pillText}</span></div>`;
 
-    item.onclick=()=>{if(!canOpen)return shake(item);loadSurvey(s.id);};
+    item.onclick=()=>{if(!canOpen)return shake(item);loadSurvey(s.id)};
     $list.appendChild(item);
   });
 }
@@ -241,12 +246,12 @@ function shake(el){
 
 function loadSurvey(id){
   const s=SURVEYS.find(x=>x.id===id);if(!s)return;current=s;
-  if(getStatus(id)!=='done') setStatus(id,'progress');
-  $title.textContent=s.title;
-  $date.textContent=s.date||'';
+  const idx = SURVEYS.indexOf(s);
+  $title.textContent = renderTitle(idx, s.title);
+  $date.textContent  = s.date||'';
   const st=getStatus(id);
-  $badge.textContent=st==='done'?'Completed':(st==='progress'?'In progress':'Unfinished');
-  $badge.className=st==='done'?'pill done':(st==='progress'?'pill progress':'pill');
+  $badge.textContent=st==='done'?'Completed':'Unfinished';
+  $badge.className=st==='done'?'pill done':'pill';
   $frame.src=s.url;
   renderList(id);
   updateBtn();
@@ -261,7 +266,7 @@ function updateBtn(){
 
 $btn.onclick=()=>{
   if(!current)return;
-  setStatus(current.id,'done');
+  setStatus(current.id,'done');         // now completed
   loadSurvey(current.id);
   const idx=nextUnfinishedIndex();
   if(idx!==-1) loadSurvey(SURVEYS[idx].id);
